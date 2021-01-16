@@ -43,7 +43,7 @@ void Bellhop::Bazaar(vector<string> Args, int ArgCount, CommandHelp HelpText)
     for (std::list<ItemData_t>::iterator iter = Items.begin(); iter != Items.end(); iter++)
     {
         //Skip EX item.
-        if ((iter->Resource->Flags & 0x4000) == 0)
+        if (iter->Resource->Flags & 0x4000)
             continue;
 
         //Skip augmented item. (Resource will not be set as non-bazaarable as it is bazaarable until augmented.)

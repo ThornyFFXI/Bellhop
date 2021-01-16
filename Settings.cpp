@@ -43,9 +43,9 @@ void Bellhop::LoadSettings(std::string Path)
     {
         if (_stricmp(Node->name(), "autotrade") == 0)
         {
-            if (Node->value() == "accept")
+            if (_stricmp(Node->value(), "accept") == 0)
                 mSettings.Default = AutoTradeSetting::Accept;
-            else if (Node->value() == "deny")
+            else if (_stricmp(Node->value(), "deny") == 0)
                 mSettings.Default = AutoTradeSetting::Deny;
         }
 

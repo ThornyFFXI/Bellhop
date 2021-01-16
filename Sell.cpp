@@ -65,8 +65,8 @@ void Bellhop::Sell(vector<string> Args, int ArgCount, CommandHelp HelpText)
         if ((iter->Item->Flags == 5) || (iter->Item->Flags == 19) || (iter->Item->Flags == 25))
             continue;
 
-        //Skip non-sellable item.
-        if ((iter->Resource->Flags & 0x1000) != 0)
+        //Skip non-sellable item
+        if (iter->Resource->Flags & 0x1000)
             continue;
 
         pk_NpcSellRequest packet;
@@ -138,7 +138,7 @@ void Bellhop::Sells(vector<string> Args, int ArgCount, CommandHelp HelpText)
             continue;
 
         //Skip non-sellable item.
-        if ((iter->Resource->Flags & 0x1000) != 0)
+        if (iter->Resource->Flags & 0x1000)
             continue;
         
         pk_NpcSellRequest packet;
@@ -205,7 +205,7 @@ void Bellhop::SellAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
             continue;
 
         //Skip non-sellable item.
-        if ((iter->Resource->Flags & 0x1000) != 0)
+        if (iter->Resource->Flags & 0x1000)
             continue;
 
         pk_NpcSellRequest packet;
