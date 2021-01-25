@@ -145,7 +145,7 @@ uint16_t Bellhop::GetShopItem(std::string Parameter, ShopItem_t* buffer)
     {
         if ((iter->second.Enabled) && (CheckItemMatch(Parameter, iter->second.Resource)))
         {
-            buffer = &iter->second;
+            *buffer = iter->second;
             return iter->first;
         }
     }
