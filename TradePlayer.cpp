@@ -118,7 +118,6 @@ void Bellhop::TradeToPlayer(vector<string> Args, int ArgCount, CommandHelp HelpT
 
     pk_TradePlayer packet;
     packet.Type      = 2;
-    packet.TradeCount = mState.TradeSync;
     m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x33, 12, (uint8_t*)(&packet));
     pOutput->message_f("Traded $H%d$R matching items to $H%s$R.", totalCount, mState.TradeName.c_str());
 }
@@ -191,7 +190,6 @@ void Bellhop::TradeAllToPlayer(vector<string> Args, int ArgCount, CommandHelp He
 
     pk_TradePlayer packet;
     packet.Type       = 2;
-    packet.TradeCount = mState.TradeSync;
     m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x33, 12, (uint8_t*)(&packet));
     pOutput->message_f("Traded $H%d$R matching items to $H%s$R.", tradeCount, mState.TradeName.c_str());
 }

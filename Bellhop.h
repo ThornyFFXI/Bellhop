@@ -18,6 +18,10 @@ extern const char* ContainerNames[CONTAINER_MAX];
 class Bellhop : IPlugin
 {
 private:
+    IAshitaCore* m_AshitaCore;
+    ILogManager* m_LogManager;
+    uint32_t m_PluginId;
+
     OutputHelpers* pOutput;
     SettingsHelper* pSettings;
     Settings_t mSettings;
@@ -52,7 +56,7 @@ public:
     }
     double GetVersion(void) const override
     {
-        return 1.02f;
+        return 1.03f;
     }
     int32_t GetPriority(void) const override
     {
