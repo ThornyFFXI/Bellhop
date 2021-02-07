@@ -241,7 +241,7 @@ uint32_t Bellhop::ParseLegacyCommands(const char* command, std::vector<std::stri
         {
             args->push_back("/bh");
             args->push_back("default");
-            args->push_back("allow");
+            args->push_back("accept");
             return 3;
         }
         else if ((argCount > 1) && (_stricmp(tempArgs[1].c_str(), "off") == 0))
@@ -260,7 +260,7 @@ uint32_t Bellhop::ParseLegacyCommands(const char* command, std::vector<std::stri
             else if (mSettings.Default == AutoTradeSetting::Deny)
                 args->push_back("ignore");
             else
-                args->push_back("allow");
+                args->push_back("accept");
             return 3;
         }
     }
