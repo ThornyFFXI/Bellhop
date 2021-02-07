@@ -441,6 +441,32 @@ void Bellhop::Config(vector<string> Args, int ArgCount, CommandHelp HelpText)
         }
     }
 
+    if (_stricmp(Args[2].c_str(), "enforcetradewindow") == 0)
+    {
+        if (ArgCount < 4)
+        {
+            PrintHelpText(HelpText, false);
+            return;
+        }
+
+        if (_stricmp(Args[3].c_str(), "enable") == 0)
+        {
+            mSettings.EnforceTradeWindow = true;
+            pOutput->message("EnforceTradeWindow $Henabled$R.");
+            SaveSettings();
+        }
+        else if (_stricmp(Args[3].c_str(), "disable") == 0)
+        {
+            mSettings.EnforceTradeWindow = false;
+            pOutput->message("EnforceTradeWindow $Hdisabled$R.");
+            SaveSettings();
+        }
+        else
+        {
+            pOutput->error_f("You must specify 'enable' or 'disable' to change EnforceTradeWindow setting.");
+        }
+    }
+
     if (_stricmp(Args[2].c_str(), "legacycommands") == 0)
     {
         if (ArgCount < 4)

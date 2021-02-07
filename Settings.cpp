@@ -131,6 +131,15 @@ void Bellhop::LoadSettings(std::string Path)
             continue;
         }
 
+        if (_stricmp(Node->name(), "enforcetradewindow") == 0)
+        {
+            if (_stricmp(Node->value(), "enabled") == 0)
+                mSettings.EnforceTradeWindow = true;
+            else if (_stricmp(Node->value(), "disabled") == 0)
+                mSettings.EnforceTradeWindow = false;
+            continue;
+        }
+
         if (_stricmp(Node->name(), "legacycommands") == 0)
         {
             if (_stricmp(Node->value(), "enabled") == 0)
@@ -307,6 +316,9 @@ void Bellhop::WriteSettings(ofstream * outStream)
 
     *outStream << "\t<!--If enabled, bellhop will allow you to purchase items you do not have the rank for from guild NPCs.  Retail servers allow this, but it cannot be accomplished with a legitimate client so it may entail ban risk.-->\n";
     *outStream << "\t<ignorecraftskill>" << (mSettings.IgnoreCraftSkill ? "Enabled" : "Disabled") << "</ignorecraftskill>\n\n";
+
+    *outStream << "\t<!--If enabled, bellhop will prevent tradeplayer commands unless a trade window is actually open.-->\n";
+    *outStream << "\t<enforcetradewindow>" << (mSettings.EnforceTradeWindow ? "Enabled" : "Disabled") << "</enforcetradewindow>\n\n";
 
     *outStream << "\t<!--If enabled, commands used for Ashita3's version of bellhop will work.  This is disabled by default as some of them overlap with ingame commands or are generic enough to compete with other plugins. -->\n";
     *outStream << "\t<legacycommands>" << (mSettings.LegacyCommands ? "Enabled" : "Disabled") << "</legacycommands>\n\n";

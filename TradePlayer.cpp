@@ -8,7 +8,7 @@ void Bellhop::TradeToPlayer(vector<string> Args, int ArgCount, CommandHelp HelpT
         return;
     }
 
-    if ((mState.TradeState != TradeState::TradeOpen) && (mState.TradeState != TradeState::TradeConfirmedByOther))
+    if ((mSettings.EnforceTradeWindow) && ((mState.TradeState != TradeState::TradeOpen) && (mState.TradeState != TradeState::TradeConfirmedByOther)))
     {
         pOutput->error("You must have trade open to use this command.");
         return;
@@ -129,7 +129,7 @@ void Bellhop::TradeAllToPlayer(vector<string> Args, int ArgCount, CommandHelp He
         return;
     }
 
-    if ((mState.TradeState != TradeState::TradeOpen) && (mState.TradeState != TradeState::TradeConfirmedByOther))
+    if ((mSettings.EnforceTradeWindow) && ((mState.TradeState != TradeState::TradeOpen) && (mState.TradeState != TradeState::TradeConfirmedByOther)))
     {
         pOutput->error("You must have trade open to use this command.");
         return;

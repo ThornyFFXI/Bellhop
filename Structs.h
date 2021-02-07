@@ -21,6 +21,7 @@ enum class AutoTradeSetting
 struct Settings_t
 {
     bool NomadStorage;
+    bool EnforceTradeWindow;
     bool IgnoreCraftSkill;
     bool LegacyCommands;
     bool ShortOutput;
@@ -37,6 +38,7 @@ struct Settings_t
         : Default(AutoTradeSetting::Ignore)
         , NomadStorage(false)
         , IgnoreCraftSkill(false)
+        , EnforceTradeWindow(false)
         , LegacyCommands(true)
         , ShortOutput(false)
         , RetryDelay(3000)
