@@ -39,8 +39,8 @@ struct pk_BuyFromNpc
     uint32_t Header;
     uint32_t Count;
     uint16_t Unknown0000;
-    uint32_t Slot;
-    uint16_t Unknown0001;
+    uint16_t Slot;
+    uint32_t Unknown0001;
 
     pk_BuyFromNpc()
         : Header(0)
