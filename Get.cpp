@@ -78,6 +78,10 @@ void Bellhop::Get(vector<string> Args, int ArgCount, CommandHelp HelpText)
         if ((iter->Item->Flags == 5) || (iter->Item->Flags == 19) || (iter->Item->Flags == 25))
             continue;
 
+        //Skip furniture that is currently placed.
+        if (((iter->Resource->Type == 10) || (iter->Resource->Type == 11) || (iter->Resource->Type == 12) || (iter->Resource->Type == 14)) && (iter->Item->Extra[1] & 0x40))
+            continue;
+
         pk_MoveItem packet;
         packet.FromStorage = iter->Container;
         packet.Quantity    = min(Quantity - resultCount, iter->Item->Count);
@@ -156,6 +160,10 @@ void Bellhop::Gets(vector<string> Args, int ArgCount, CommandHelp HelpText)
         if ((iter->Item->Flags == 5) || (iter->Item->Flags == 19) || (iter->Item->Flags == 25))
             continue;
 
+        //Skip furniture that is currently placed.
+        if (((iter->Resource->Type == 10) || (iter->Resource->Type == 11) || (iter->Resource->Type == 12) || (iter->Resource->Type == 14)) && (iter->Item->Extra[1] & 0x40))
+            continue;
+
         pk_MoveItem packet;
         packet.FromStorage = iter->Container;
         packet.Quantity    = iter->Item->Count;
@@ -214,6 +222,10 @@ void Bellhop::GetAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
     {
         //Skip equipped gear, bazaared item, equipped linkshell.
         if ((iter->Item->Flags == 5) || (iter->Item->Flags == 19) || (iter->Item->Flags == 25))
+            continue;
+
+        //Skip furniture that is currently placed.
+        if (((iter->Resource->Type == 10) || (iter->Resource->Type == 11) || (iter->Resource->Type == 12) || (iter->Resource->Type == 14)) && (iter->Item->Extra[1] & 0x40))
             continue;
 
         pk_MoveItem packet;
