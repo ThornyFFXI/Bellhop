@@ -211,7 +211,7 @@ void Bellhop::EnableBags(vector<string> Args, int ArgCount, CommandHelp HelpText
         int index = GetContainerIndexFromName(Args[3].c_str());
         if ((index < 0) || (index > CONTAINER_MAX))
         {
-            pOutput->error_f("$H%s$R is not a valid bag.");
+            pOutput->error_f("$H%s$R is not a valid bag.", Args[3].c_str());
             return;
         }
 
@@ -238,7 +238,7 @@ void Bellhop::EnableBags(vector<string> Args, int ArgCount, CommandHelp HelpText
         int index = GetContainerIndexFromName(Args[3].c_str());
         if ((index < 0) || (index > CONTAINER_MAX))
         {
-            pOutput->error_f("$H%s$R is not a valid bag.");
+            pOutput->error_f("$H%s$R is not a valid bag.", Args[3].c_str());
             return;
         }
 
@@ -305,7 +305,7 @@ void Bellhop::DisableBags(vector<string> Args, int ArgCount, CommandHelp HelpTex
         int index = GetContainerIndexFromName(Args[3].c_str());
         if ((index < 0) || (index > CONTAINER_MAX))
         {
-            pOutput->error_f("$H%s$R is not a valid bag.");
+            pOutput->error_f("$H%s$R is not a valid bag.", Args[3].c_str());
             return;
         }
 
@@ -332,7 +332,7 @@ void Bellhop::DisableBags(vector<string> Args, int ArgCount, CommandHelp HelpTex
         int index = GetContainerIndexFromName(Args[3].c_str());
         if ((index < 0) || (index > CONTAINER_MAX))
         {
-            pOutput->error_f("$H%s$R is not a valid bag.");
+            pOutput->error_f("$H%s$R is not a valid bag.", Args[3].c_str());
             return;
         }
 
