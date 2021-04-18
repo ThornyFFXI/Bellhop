@@ -34,20 +34,18 @@ struct pk_SetBazaar
     {}
 };
 
-struct pk_BuyFromNpc
+//0x83
+struct pk_BuyFromNPC
 {
-    uint32_t Header;
-    uint32_t Count;
-    uint16_t Unknown0000;
-    uint16_t Slot;
-    uint32_t Unknown0001;
+    const uint32_t Header = 0x00000000;
+    uint8_t Count;
+    const uint8_t Padding[5] = {0};
+    uint8_t Index;
+    const uint8_t Padding2[5] = {0};
 
-    pk_BuyFromNpc()
-        : Header(0)
-        , Count(0)
-        , Unknown0000(0)
-        , Slot(0)
-        , Unknown0001(0)
+    pk_BuyFromNPC()
+        : Count(0)
+        , Index(0)
     {}
 };
 

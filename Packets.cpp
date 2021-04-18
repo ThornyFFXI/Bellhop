@@ -139,7 +139,7 @@ void Bellhop::HandleIncomingPacket_03C(uint32_t size, const uint8_t* data)
 
     for (int x = 8; (x + 7) < size; x += 12)
     {
-        uint16_t slot = Read16(data, x + 6);
+        uint16_t slot = Read8(data, x + 6);
         ShopItem_t entry;
         entry.Enabled = true;
         entry.Price   = Read32(data, x);

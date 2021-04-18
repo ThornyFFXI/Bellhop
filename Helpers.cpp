@@ -139,9 +139,9 @@ int Bellhop::GetMatchingItemsByType(std::list<uint16_t> Ids, int Container, std:
 
     return count;
 }
-uint16_t Bellhop::GetShopItem(std::string Parameter, ShopItem_t* buffer)
+uint8_t Bellhop::GetShopItem(std::string Parameter, ShopItem_t* buffer)
 {
-    for (std::map<uint16_t, ShopItem_t>::iterator iter = mState.ShopStock.begin(); iter != mState.ShopStock.end(); iter++)
+    for (std::map<uint8_t, ShopItem_t>::iterator iter = mState.ShopStock.begin(); iter != mState.ShopStock.end(); iter++)
     {
         if ((iter->second.Enabled) && (CheckItemMatch(Parameter, iter->second.Resource)))
         {

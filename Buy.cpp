@@ -24,7 +24,7 @@ void Bellhop::Buy(vector<string> Args, int ArgCount, CommandHelp HelpText)
     }
 
     ShopItem_t matchData = {0};
-    uint16_t matchSlot    = GetShopItem(Args[2], &matchData);
+    uint8_t matchSlot    = GetShopItem(Args[2], &matchData);
     if (matchData.Resource == NULL)
     {
         pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
@@ -50,10 +50,10 @@ void Bellhop::Buy(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     while (boughtAmount < buyAmount)
     {
-        pk_BuyFromNpc packet;
-        packet.Slot          = matchSlot;
+        pk_BuyFromNPC packet;
+        packet.Index          = matchSlot;
         packet.Count         = min(buyAmount - boughtAmount, matchData.Resource->StackSize);
-        m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x83, sizeof(pk_BuyFromNpc), (uint8_t*)&packet);
+        m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x83, sizeof(packet), (uint8_t*)&packet);
         boughtAmount += packet.Count;
     }
 
@@ -77,7 +77,7 @@ void Bellhop::Buys(vector<string> Args, int ArgCount, CommandHelp HelpText)
     }
 
     ShopItem_t matchData = {0};
-    uint16_t matchSlot    = GetShopItem(Args[2], &matchData);
+    uint8_t matchSlot    = GetShopItem(Args[2], &matchData);
     if (matchData.Resource == NULL)
     {
         pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
@@ -102,10 +102,10 @@ void Bellhop::Buys(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     while (boughtAmount < buyAmount)
     {
-        pk_BuyFromNpc packet;
-        packet.Slot          = matchSlot;
+        pk_BuyFromNPC packet;
+        packet.Index = matchSlot;
         packet.Count         = min(buyAmount - boughtAmount, matchData.Resource->StackSize);
-        m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x83, sizeof(pk_BuyFromNpc), (uint8_t*)&packet);
+        m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x83, sizeof(packet), (uint8_t*)&packet);
         boughtAmount += packet.Count;
     }
 
@@ -129,7 +129,7 @@ void Bellhop::BuyAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
     }
 
     ShopItem_t matchData = {0};
-    uint16_t matchSlot = GetShopItem(Args[2], &matchData);
+    uint8_t matchSlot = GetShopItem(Args[2], &matchData);
     if (matchData.Resource == NULL)
     {
         pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
@@ -155,10 +155,10 @@ void Bellhop::BuyAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     while (boughtAmount < buyAmount)
     {
-        pk_BuyFromNpc packet;
-        packet.Slot          = matchSlot;
+        pk_BuyFromNPC packet;
+        packet.Index = matchSlot;
         packet.Count         = min(buyAmount - boughtAmount, matchData.Resource->StackSize);
-        m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x83, sizeof(pk_BuyFromNpc), (uint8_t*)&packet);
+        m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x83, sizeof(packet), (uint8_t*)&packet);
         boughtAmount += packet.Count;
     }
 

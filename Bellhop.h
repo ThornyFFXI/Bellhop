@@ -56,7 +56,7 @@ public:
     }
     double GetVersion(void) const override
     {
-        return 1.08f;
+        return 1.09f;
     }
     int32_t GetPriority(void) const override
     {
@@ -137,7 +137,7 @@ public:
     int GetMatchingItemsByWildcard(std::string Parameter, int Container, std::list<ItemData_t>* Output);
     int GetMatchingItemsByResource(IItem* pResource, int Container, std::list<ItemData_t>* Output);
     int GetMatchingItemsByType(std::list<uint16_t> Ids, int Container, std::list<ItemData_t>* Output);
-    uint16_t GetShopItem(std::string Parameter, ShopItem_t* buffer);
+    uint8_t GetShopItem(std::string Parameter, ShopItem_t* buffer);
     int GetAvailableSpace(int Container);
     int GetContainerIndexFromName(const char* ContainerName);
     AutoTradeSetting GetTradeResponse(std::string Name);

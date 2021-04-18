@@ -98,7 +98,7 @@ struct State_t
     bool ShopActive;
     uint16_t ShopIndex;
     std::string ShopName;
-    std::map<uint16_t, ShopItem_t> ShopStock;
+    std::map<uint8_t, ShopItem_t> ShopStock;
 
     State_t()
         : MyName("Unknown")
@@ -110,7 +110,7 @@ struct State_t
         , ShopActive(false)
         , ShopIndex(false)
         , ShopName("Unknown")
-        , ShopStock(std::map<uint16_t, ShopItem_t>())
+        , ShopStock(std::map<uint8_t, ShopItem_t>())
     {}
 };
 
