@@ -80,7 +80,7 @@ int Bellhop::GetMatchingItemsByWildcard(std::string Parameter, int Container, st
     IInventory* pInv = m_AshitaCore->GetMemoryManager()->GetInventory();
     int containerMax = pInv->GetContainerCountMax(Container);
 
-    for (int x = 1; x <= containerMax; x++)
+    for (int x = 0; x <= containerMax; x++)
     {
         Ashita::FFXI::item_t* pItem = pInv->GetContainerItem(Container, x);
         if ((pItem->Id == 0) || (pItem->Count == 0))
@@ -104,7 +104,7 @@ int Bellhop::GetMatchingItemsByResource(IItem * pResource, int Container, std::l
     IInventory* pInv = m_AshitaCore->GetMemoryManager()->GetInventory();
     int containerMax = pInv->GetContainerCountMax(Container);
 
-    for (int x = 1; x <= containerMax; x++)
+    for (int x = 0; x <= containerMax; x++)
     {
         Ashita::FFXI::item_t* pItem = pInv->GetContainerItem(Container, x);
         if ((pItem->Id != pResource->Id) || (pItem->Count == 0))
@@ -121,7 +121,7 @@ int Bellhop::GetMatchingItemsByType(std::list<uint16_t> Ids, int Container, std:
     IInventory* pInv = m_AshitaCore->GetMemoryManager()->GetInventory();
     int containerMax = pInv->GetContainerCountMax(Container);
 
-    for (int x = 1; x <= containerMax; x++)
+    for (int x = 0; x <= containerMax; x++)
     {
         Ashita::FFXI::item_t* pItem = pInv->GetContainerItem(Container, x);
         if ((pItem->Id == 0) || (pItem->Count == 0))

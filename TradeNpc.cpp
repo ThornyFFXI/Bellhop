@@ -33,11 +33,6 @@ void Bellhop::TradeToNpc(vector<string> Args, int ArgCount, CommandHelp HelpText
         int quantity                = 1;
         if ((x + 1) < ArgCount)
             quantity = atoi(Args[x + 1].c_str());
-        if ((quantity < 1) || (quantity > 792))
-        {
-            pOutput->error_f("Quantity must be between 1 and 792.  You input quantity of $H%s$R for the item $H%s$R.", Args[x + 1].c_str(), Args[x].c_str());
-            return;
-        }
 
         std::list<ItemData_t> items = GetMatchingItems(Args[x], 0);
         items.sort([quantity](const ItemData_t a, const ItemData_t b) {
