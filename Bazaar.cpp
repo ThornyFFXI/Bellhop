@@ -42,6 +42,10 @@ void Bellhop::Bazaar(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     for (std::list<ItemData_t>::iterator iter = Items.begin(); iter != Items.end(); iter++)
     {
+        //Skip gil
+        if (iter->Item->Id == 65535)
+            continue;
+
         //Skip EX item.
         if (iter->Resource->Flags & 0x4000)
             continue;

@@ -89,6 +89,10 @@ void Bellhop::Put(vector<string> Args, int ArgCount, CommandHelp HelpText)
     uint32_t resultCount = 0;
     for (std::list<ItemData_t>::iterator iter = items.begin(); iter != items.end(); iter++)
     {
+        //Skip gil
+        if (iter->Item->Id == 65535)
+            continue;
+
         //Skip equipped gear, bazaared item, equipped linkshell.
         if ((iter->Item->Flags == 5) || (iter->Item->Flags == 19) || (iter->Item->Flags == 25))
             continue;
@@ -195,6 +199,10 @@ void Bellhop::Puts(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     for (std::list<ItemData_t>::iterator iter = items.begin(); iter != items.end(); iter++)
     {
+        //Skip gil
+        if (iter->Item->Id == 65535)
+            continue;
+
         //Skip equipped gear, bazaared item, equipped linkshell.
         if ((iter->Item->Flags == 5) || (iter->Item->Flags == 19) || (iter->Item->Flags == 25))
             continue;
@@ -283,6 +291,10 @@ void Bellhop::PutAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
     uint32_t resultCount = 0;
     for (std::list<ItemData_t>::iterator iter = items.begin(); iter != items.end(); iter++)
     {
+        //Skip gil
+        if (iter->Item->Id == 65535)
+            continue;
+
         //Skip equipped gear, bazaared item, equipped linkshell.
         if ((iter->Item->Flags == 5) || (iter->Item->Flags == 19) || (iter->Item->Flags == 25))
             continue;

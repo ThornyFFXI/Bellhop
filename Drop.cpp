@@ -28,6 +28,10 @@ void Bellhop::Drop(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     for (std::list<ItemData_t>::iterator iter = Items.begin(); iter != Items.end(); iter++)
     {
+        //Skip gil
+        if (iter->Item->Id == 65535)
+            continue;
+
         //Skip equipped gear, bazaared item, equipped linkshell.
         if ((iter->Item->Flags == 5) || (iter->Item->Flags == 19) || (iter->Item->Flags == 25))
             continue;
