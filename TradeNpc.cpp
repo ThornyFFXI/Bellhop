@@ -105,6 +105,7 @@ void Bellhop::TradeToNpc(vector<string> Args, int ArgCount, CommandHelp HelpText
         }
     }
 
+    packet.ArrangeGil();
     m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x36, sizeof(pk_TradeToNpc), (uint8_t*)&packet);
     pOutput->message_f("Traded $H%d$R matching items to $H%s$R.", totalCount, m_AshitaCore->GetMemoryManager()->GetEntity()->GetName(packet.TargetIndex));
 }
@@ -173,6 +174,7 @@ void Bellhop::TradeAllToNpc(vector<string> Args, int ArgCount, CommandHelp HelpT
         return;
     }
 
+    packet.ArrangeGil();
     m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x36, sizeof(pk_TradeToNpc), (uint8_t*)&packet);
     pOutput->message_f("Traded $H%d$R matching items to $H%s$R.", tradeCount, m_AshitaCore->GetMemoryManager()->GetEntity()->GetName(packet.TargetIndex));
 }

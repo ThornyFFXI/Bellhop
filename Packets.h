@@ -144,6 +144,22 @@ struct pk_TradeToNpc
             ItemIndex[x]    = 0;
         }
     }
+
+    //Legitimate client always puts gil first in NPC trades.
+    void ArrangeGil()
+    {
+        for (int x = 1; x < TotalItems; x++)
+        {
+            if (ItemIndex[x] == 0)
+            {
+                int gilQuantity = ItemQuantity[x];
+                ItemIndex[x]    = ItemIndex[0];
+                ItemQuantity[x] = ItemQuantity[0];
+                ItemIndex[0]    = 0;
+                ItemQuantity[0] = gilQuantity;
+            }
+        }
+    }
 };
 
 struct pk_AddItemToPlayerTrade

@@ -17,6 +17,7 @@ void Bellhop::TradeToPlayer(vector<string> Args, int ArgCount, CommandHelp HelpT
     std::list<pk_AddItemToPlayerTrade> pendingPackets;
     std::list<int> indicesUsed;
     uint32_t totalCount = 0;
+    int currentSlot     = 1;
 
     for (int x = 2; x < ArgCount; x += 2)
     {
@@ -51,7 +52,7 @@ void Bellhop::TradeToPlayer(vector<string> Args, int ArgCount, CommandHelp HelpT
         });
 
         int itemsFound = 0;
-        while ((items.size() > 0) && (itemsFound < quantity) && (pendingPackets.size() < 8))
+        while ((items.size() > 0) && (itemsFound < quantity))
         {
             std::list<ItemData_t>::iterator iter = items.begin();
 
@@ -80,7 +81,19 @@ void Bellhop::TradeToPlayer(vector<string> Args, int ArgCount, CommandHelp HelpT
             packet.Id       = iter->Item->Id;
             packet.Index    = iter->Item->Index;
             packet.Quantity = min(quantity - itemsFound, iter->Item->Count);
-            packet.Slot     = pendingPackets.size() + 1;
+            if (packet.Id == 65535)
+            {
+                packet.Slot = 0;
+            }
+            else if (currentSlot == 9)
+            {
+                break;
+            }
+            else
+            {
+                packet.Slot = currentSlot;
+                currentSlot++;
+            }
 
             itemsFound += packet.Quantity;
             totalCount += packet.Quantity;
@@ -92,9 +105,9 @@ void Bellhop::TradeToPlayer(vector<string> Args, int ArgCount, CommandHelp HelpT
 
         if (itemsFound < quantity)
         {
-            if (pendingPackets.size() == 8)
+            if (currentSlot == 9)
             {
-                pOutput->error("Requested trade could not be fit in 8 trade slots.");
+                pOutput->error("Requested trade could not be fit in available trade slots.");
                 return;
             }
             else
@@ -147,8 +160,8 @@ void Bellhop::TradeAllToPlayer(vector<string> Args, int ArgCount, CommandHelp He
     });
 
     uint32_t tradeCount = 0;
-    uint32_t slotCount  = 0;
-    while ((items.size() > 0) && (slotCount < 8))
+    int currentSlot     = 1;
+    while (items.size() > 0)
     {
         std::list<ItemData_t>::iterator iter = items.begin();
 
@@ -170,9 +183,20 @@ void Bellhop::TradeAllToPlayer(vector<string> Args, int ArgCount, CommandHelp He
         packet.Id = iter->Item->Id;
         packet.Index = iter->Item->Index;
         packet.Quantity = iter->Item->Count;
-        slotCount++; //Not zero indexed, 0 slot reserved for gil..
         tradeCount += packet.Quantity;
-        packet.Slot     = slotCount;
+        if (packet.Id == 65535)
+        {
+            packet.Slot = 0;
+        }
+        else if (currentSlot == 9)
+        {
+            break;
+        }
+        else
+        {
+            packet.Slot = currentSlot;
+            currentSlot++;
+        }
         m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x34, sizeof(pk_AddItemToPlayerTrade), (uint8_t*)&packet);
         items.erase(iter);
     }
