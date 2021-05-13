@@ -183,7 +183,6 @@ void Bellhop::TradeAllToPlayer(vector<string> Args, int ArgCount, CommandHelp He
         packet.Id = iter->Item->Id;
         packet.Index = iter->Item->Index;
         packet.Quantity = iter->Item->Count;
-        tradeCount += packet.Quantity;
         if (packet.Id == 65535)
         {
             packet.Slot = 0;
@@ -197,6 +196,7 @@ void Bellhop::TradeAllToPlayer(vector<string> Args, int ArgCount, CommandHelp He
             packet.Slot = currentSlot;
             currentSlot++;
         }
+        tradeCount += packet.Quantity;
         m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x34, sizeof(pk_AddItemToPlayerTrade), (uint8_t*)&packet);
         items.erase(iter);
     }
