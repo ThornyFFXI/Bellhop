@@ -197,7 +197,7 @@ void Bellhop::LoadSettings(std::string Path)
                                 for (int x = 1; x < 65535; x++)
                                 {
                                     IItem* pResource = m_AshitaCore->GetResourceManager()->GetItemById(x);
-                                    if ((pResource) && (_stricmp(subAttr->value(), pResource->Name[0]) == 0))
+                                    if ((pResource) && (pResource->Name[0]) && (_stricmp(subAttr->value(), pResource->Name[0]) == 0))
                                     {
                                         MatchIds.push_back(x);
                                     }
@@ -210,7 +210,7 @@ void Bellhop::LoadSettings(std::string Path)
                                 for (int x = 1; x < 65535; x++)
                                 {
                                     IItem* pResource = m_AshitaCore->GetResourceManager()->GetItemById(x);
-                                    if ((pResource) && (CheckWildcardMatch(subAttr->value(), pResource->Name[0])))
+                                    if ((pResource) && (pResource->Name[0]) && (CheckWildcardMatch(subAttr->value(), pResource->Name[0])))
                                     {
                                         MatchIds.push_back(x);
                                     }
