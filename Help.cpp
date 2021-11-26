@@ -12,7 +12,7 @@ void Bellhop::Help(vector<string> Args, int ArgCount, CommandHelp HelpText)
         }
     }
 
-    pOutput->message("Command List");
+    OutputHelper::Output(Ashita::LogLevel::Info, "Command List");
     for (auto iter = mCommandMap.begin(); iter != mCommandMap.end(); iter++)
     {
         PrintHelpText(iter->second.help, false);

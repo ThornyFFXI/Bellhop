@@ -14,7 +14,7 @@ void Bellhop::Put(vector<string> Args, int ArgCount, CommandHelp HelpText)
         Quantity = atoi(Args[3].c_str());
         if ((Quantity < 1) || (Quantity > 7920))
         {
-            pOutput->error_f("Quantity must be between 1 and 7920.  You entered: %s", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Quantity must be between 1 and 7920.  You entered: %s", Args[3].c_str());
             return;
         }
     }
@@ -25,7 +25,7 @@ void Bellhop::Put(vector<string> Args, int ArgCount, CommandHelp HelpText)
         Container = GetContainerIndexFromName(Args[4].c_str());
         if (Container == -1)
         {
-            pOutput->error_f("Invalid container specified.  You input: %s", Args[4].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Invalid container specified.  You input: %s", Args[4].c_str());
             return;
         }
     }
@@ -48,7 +48,7 @@ void Bellhop::Put(vector<string> Args, int ArgCount, CommandHelp HelpText)
     }
     if (!spaceFound)
     {
-        pOutput->error("No available space to store items.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "No available space to store items.");
         return;
     }
 
@@ -56,7 +56,7 @@ void Bellhop::Put(vector<string> Args, int ArgCount, CommandHelp HelpText)
     std::list<ItemData_t> items = GetMatchingItems(Args[2], 0);
     if (items.size() == 0)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
 
@@ -125,21 +125,21 @@ void Bellhop::Put(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     if (resultCount == 0)
     {
-        pOutput->error("None of the available storage containers can hold a matching item.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "None of the available storage containers can hold a matching item.");
         return;
     }
-    else if ((results.size() > 1) && (mSettings.ShortOutput))
+    else if ((results.size() > 1) && (mConfig.GetShortOutput()))
     {
-        pOutput->message_f("Storing $H%u matching items$R.", resultCount);
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Storing $H%u matching items$R.", resultCount);
     }
     else
     {
         for (std::list<ItemActionInfo>::iterator iter = results.begin(); iter != results.end(); iter++)
         {
             if (iter->Count == 1)
-                pOutput->message_f("Storing a $H%s$R in $H%s$R.", iter->Resource->LogNameSingular[0], ContainerNames[iter->Location]);
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Storing a $H%s$R in $H%s$R.", iter->Resource->LogNameSingular[0], ContainerNames[iter->Location]);
             else
-                pOutput->message_f("Storing $H%u %s$R in $H%s$R.", iter->Count, iter->Resource->LogNamePlural[0], ContainerNames[iter->Location]);
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Storing $H%u %s$R in $H%s$R.", iter->Count, iter->Resource->LogNamePlural[0], ContainerNames[iter->Location]);
         }
     }
 }
@@ -157,7 +157,7 @@ void Bellhop::Puts(vector<string> Args, int ArgCount, CommandHelp HelpText)
         Container = GetContainerIndexFromName(Args[3].c_str());
         if (Container == -1)
         {
-            pOutput->error_f("Invalid container specified.  You input: %s", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Invalid container specified.  You input: %s", Args[3].c_str());
             return;
         }
     }
@@ -180,14 +180,14 @@ void Bellhop::Puts(vector<string> Args, int ArgCount, CommandHelp HelpText)
     }
     if (!spaceFound)
     {
-        pOutput->error("No available space to store items.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "No available space to store items.");
         return;
     }
 
     std::list<ItemData_t> items = GetMatchingItems(Args[2], 0);
     if (items.size() == 0)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
 
@@ -226,13 +226,13 @@ void Bellhop::Puts(vector<string> Args, int ArgCount, CommandHelp HelpText)
         m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x029, sizeof(pk_MoveItem), (uint8_t*)&packet);
 
         if (packet.Quantity == 1)
-            pOutput->message_f("Storing a $H%s$R in $H%s$R.", iter->Resource->LogNameSingular[0], ContainerNames[packet.ToStorage]);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Storing a $H%s$R in $H%s$R.", iter->Resource->LogNameSingular[0], ContainerNames[packet.ToStorage]);
         else
-            pOutput->message_f("Storing $H%u %s$R in $H%s$R.", packet.Quantity, iter->Resource->LogNamePlural[0], ContainerNames[packet.ToStorage]);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Storing $H%u %s$R in $H%s$R.", packet.Quantity, iter->Resource->LogNamePlural[0], ContainerNames[packet.ToStorage]);
         return;
     }
     
-    pOutput->error("None of the available storage containers can hold a matching item.");
+    OutputHelper::Output(Ashita::LogLevel::Error, "None of the available storage containers can hold a matching item.");
 }
 void Bellhop::PutAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
 {
@@ -248,7 +248,7 @@ void Bellhop::PutAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
         Container = GetContainerIndexFromName(Args[3].c_str());
         if (Container == -1)
         {
-            pOutput->error_f("Invalid container specified.  You input: %s", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Invalid container specified.  You input: %s", Args[3].c_str());
             return;
         }
     }
@@ -271,14 +271,14 @@ void Bellhop::PutAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
     }
     if (!spaceFound)
     {
-        pOutput->error("No available space to store items.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "No available space to store items.");
         return;
     }
 
     std::list<ItemData_t> items = GetMatchingItems(Args[2], 0);
     if (items.size() == 0)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
 
@@ -324,21 +324,21 @@ void Bellhop::PutAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     if (resultCount == 0)
     {
-        pOutput->error("None of the available storage containers can hold a matching item.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "None of the available storage containers can hold a matching item.");
         return;
     }
-    else if ((results.size() > 1) && (mSettings.ShortOutput))
+    else if ((results.size() > 1) && (mConfig.GetShortOutput()))
     {
-        pOutput->message_f("Storing $H%u$R matching items.", resultCount);
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Storing $H%u$R matching items.", resultCount);
     }
     else
     {
         for (std::list<ItemActionInfo>::iterator iter = results.begin(); iter != results.end(); iter++)
         {
             if (iter->Count == 1)
-                pOutput->message_f("Storing a $H%s$R in $H%s$R.", iter->Resource->LogNameSingular[0], ContainerNames[iter->Location]);
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Storing a $H%s$R in $H%s$R.", iter->Resource->LogNameSingular[0], ContainerNames[iter->Location]);
             else
-                pOutput->message_f("Storing $H%u %s$R in $H%s$R.", iter->Count, iter->Resource->LogNamePlural[0], ContainerNames[iter->Location]);
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Storing $H%u %s$R in $H%s$R.", iter->Count, iter->Resource->LogNamePlural[0], ContainerNames[iter->Location]);
         }
     }
 }

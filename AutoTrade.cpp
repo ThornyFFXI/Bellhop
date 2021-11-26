@@ -13,10 +13,10 @@ void Bellhop::HandleAutoTrade()
             //Send trade accept
             pk_TradePlayer packet;
             m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x33, 12, (uint8_t*)(&packet));
-            pOutput->message_f("Sending trade accept packet. [$H%s$R]", mState.TradeName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Sending trade accept packet. [$H%s$R]", mState.TradeName.c_str());
 
             //Set repeat time
-            mState.TradeDelay = std::chrono::steady_clock::now() + std::chrono::milliseconds(mSettings.RetryDelay);
+            mState.TradeDelay = std::chrono::steady_clock::now() + std::chrono::milliseconds(mConfig.GetRetryDelay());
         }
         else if (response == AutoTradeSetting::Deny)
         {
@@ -24,10 +24,10 @@ void Bellhop::HandleAutoTrade()
             pk_TradePlayer packet;
             packet.Type          = 1;
             m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x33, 12, (uint8_t*)(&packet));
-            pOutput->message_f("Sending trade deny packet. [$H%s$R]", mState.TradeName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Sending trade deny packet. [$H%s$R]", mState.TradeName.c_str());
 
             //Set repeat time
-            mState.TradeDelay = std::chrono::steady_clock::now() + std::chrono::milliseconds(mSettings.RetryDelay);
+            mState.TradeDelay = std::chrono::steady_clock::now() + std::chrono::milliseconds(mConfig.GetRetryDelay());
         }
     }
 
@@ -41,10 +41,10 @@ void Bellhop::HandleAutoTrade()
             packet.Type          = 2;
             packet.TradeCount    = mState.TradeSync;
             m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x33, 12, (uint8_t*)(&packet));
-            pOutput->message_f("Sending trade confirm packet. [$H%s$R]", mState.TradeName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Sending trade confirm packet. [$H%s$R]", mState.TradeName.c_str());
 
             //Set repeat time
-            mState.TradeDelay = std::chrono::steady_clock::now() + std::chrono::milliseconds(mSettings.RetryDelay);
+            mState.TradeDelay = std::chrono::steady_clock::now() + std::chrono::milliseconds(mConfig.GetRetryDelay());
         }
         else if (response == AutoTradeSetting::Deny)
         {
@@ -52,10 +52,10 @@ void Bellhop::HandleAutoTrade()
             pk_TradePlayer packet;
             packet.Type          = 1;
             m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x33, 12, (uint8_t*)(&packet));
-            pOutput->message_f("Sending trade cancel packet. [$H%s$R]", mState.TradeName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Sending trade cancel packet. [$H%s$R]", mState.TradeName.c_str());
 
             //Set repeat time
-            mState.TradeDelay = std::chrono::steady_clock::now() + std::chrono::milliseconds(mSettings.RetryDelay);
+            mState.TradeDelay = std::chrono::steady_clock::now() + std::chrono::milliseconds(mConfig.GetRetryDelay());
         }
     }
 }

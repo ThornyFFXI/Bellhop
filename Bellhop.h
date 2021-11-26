@@ -6,9 +6,8 @@
 #endif
 
 #include "C:\Ashita 4\plugins\sdk\Ashita.h"
-#include "..\common\Utilities.h"
-#include "..\common\Output.h"
-#include "..\common\Settings.h"
+#include "BellhopConfig.h"
+#include "Utilities.h"
 #include "Packets.h"
 #include "Structs.h"
 
@@ -21,10 +20,8 @@ private:
     IAshitaCore* m_AshitaCore;
     ILogManager* m_LogManager;
     uint32_t m_PluginId;
+    BellhopConfig mConfig;
 
-    OutputHelpers* pOutput;
-    SettingsHelper* pSettings;
-    Settings_t mSettings;
     State_t mState;
     DWORD pWardrobe;
     DWORD pZoneFlags;
@@ -56,7 +53,7 @@ public:
     }
     double GetVersion(void) const override
     {
-        return 1.16f;
+        return 1.17f;
     }
     int32_t GetPriority(void) const override
     {
@@ -124,19 +121,12 @@ public:
     void HandleOutgoingPacket_109(uint32_t size, const uint8_t* data);
     void HandleOutgoingPacket_10B(uint32_t size, const uint8_t* data);
 
-    // Settings.cpp
-    void LoadSettings();
-    void LoadSettings(std::string Path);
-    void SaveSettings();
-    void SaveSettings(std::string Path);
-    void WriteSettings(ofstream* outStream);
-
     // Helpers.cpp
     std::list<ItemData_t> GetMatchingItemsNoInventory(std::string Parameter);
     std::list<ItemData_t> GetMatchingItems(std::string Parameter, int Container);
     int GetMatchingItemsByWildcard(std::string Parameter, int Container, std::list<ItemData_t>* Output);
     int GetMatchingItemsByResource(IItem* pResource, int Container, std::list<ItemData_t>* Output);
-    int GetMatchingItemsByType(std::list<uint16_t> Ids, int Container, std::list<ItemData_t>* Output);
+    int GetMatchingItemsByType(std::vector<uint16_t> Ids, int Container, std::list<ItemData_t>* Output);
     uint8_t GetShopItem(std::string Parameter, ShopItem_t* buffer);
     int GetAvailableSpace(int Container);
     int GetContainerIndexFromName(const char* ContainerName);
@@ -144,9 +134,7 @@ public:
     uint16_t StringToUint16OrZero(std::string Parameter);
     bool CanStoreItem(int Container, ItemData_t item);
     bool CheckItemMatch(std::string Parameter, IItem* pResource);
-    bool CheckWildcardMatch(const char* wc, const char* compare);
     void CheckContainers(uint8_t* buffer);
-    std::string FormatName(std::string Input);
     void PrintHelpText(CommandHelp help, bool Description);
     bool AddToList(std::list<string>* List, std::string Name);
     bool RemoveFromList(std::list<string>* List, std::string Name);

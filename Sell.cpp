@@ -4,7 +4,7 @@ void Bellhop::Sell(vector<string> Args, int ArgCount, CommandHelp HelpText)
 {
     if (!mState.ShopActive)
     {
-        pOutput->error("You do not currently have a shop active.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You do not currently have a shop active.");
         return;
     }
 
@@ -20,7 +20,7 @@ void Bellhop::Sell(vector<string> Args, int ArgCount, CommandHelp HelpText)
         Quantity = atoi(Args[3].c_str());
         if ((Quantity < 1) || (Quantity > 7920))
         {
-            pOutput->error_f("Quantity must be between 1 and 7920.  You entered: %s", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Quantity must be between 1 and 7920.  You entered: %s", Args[3].c_str());
             return;
         }
     }
@@ -28,7 +28,7 @@ void Bellhop::Sell(vector<string> Args, int ArgCount, CommandHelp HelpText)
     std::list<ItemData_t> items = GetMatchingItems(Args[2], 0);
     if (items.size() == 0)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
 
@@ -91,21 +91,21 @@ void Bellhop::Sell(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     if (resultCount == 0)
     {
-        pOutput->error("None of the matching items can be sold.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "None of the matching items can be sold.");
         return;
     }
-    else if ((results.size() > 1) && (mSettings.ShortOutput))
+    else if ((results.size() > 1) && (mConfig.GetShortOutput()))
     {
-        pOutput->message_f("Selling $H%u matching items$R to $H%s$R.", resultCount, mState.ShopName.c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Selling $H%u matching items$R to $H%s$R.", resultCount, mState.ShopName.c_str());
     }
     else
     {
         for (std::list<ItemActionInfo>::iterator iter = results.begin(); iter != results.end(); iter++)
         {
             if (iter->Count == 1)
-                pOutput->message_f("Selling a $H%s$R to $H%s$R.", iter->Resource->LogNameSingular[0], mState.ShopName.c_str());
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Selling a $H%s$R to $H%s$R.", iter->Resource->LogNameSingular[0], mState.ShopName.c_str());
             else
-                pOutput->message_f("Selling $H%u %s$R to $H%s$R.", iter->Count, iter->Resource->LogNamePlural[0], mState.ShopName.c_str());
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Selling $H%u %s$R to $H%s$R.", iter->Count, iter->Resource->LogNamePlural[0], mState.ShopName.c_str());
         }
     }
 }
@@ -113,7 +113,7 @@ void Bellhop::Sells(vector<string> Args, int ArgCount, CommandHelp HelpText)
 {
     if (!mState.ShopActive)
     {
-        pOutput->error("You do not currently have a shop active.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You do not currently have a shop active.");
         return;
     }
 
@@ -126,7 +126,7 @@ void Bellhop::Sells(vector<string> Args, int ArgCount, CommandHelp HelpText)
     std::list<ItemData_t> items = GetMatchingItems(Args[2], 0);
     if (items.size() == 0)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
 
@@ -159,19 +159,19 @@ void Bellhop::Sells(vector<string> Args, int ArgCount, CommandHelp HelpText)
         m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x85, sizeof(pk_NpcSellConfirm), (uint8_t*)&packet2);
 
         if (packet.Quantity == 1)
-            pOutput->message_f("Selling a $H%s$R to $H%s$R.", iter->Resource->LogNameSingular[0], mState.ShopName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Selling a $H%s$R to $H%s$R.", iter->Resource->LogNameSingular[0], mState.ShopName.c_str());
         else
-            pOutput->message_f("Selling $H%u %s$R to $H%s$R.", packet.Quantity, iter->Resource->LogNamePlural[0], mState.ShopName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Selling $H%u %s$R to $H%s$R.", packet.Quantity, iter->Resource->LogNamePlural[0], mState.ShopName.c_str());
         return;
     }
 
-    pOutput->error("None of the matching items can be sold.");
+    OutputHelper::Output(Ashita::LogLevel::Error, "None of the matching items can be sold.");
 }
 void Bellhop::SellAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
 {
     if (!mState.ShopActive)
     {
-        pOutput->error("You do not currently have a shop active.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You do not currently have a shop active.");
         return;
     }
 
@@ -187,7 +187,7 @@ void Bellhop::SellAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
         Container = GetContainerIndexFromName(Args[3].c_str());
         if (Container == -1)
         {
-            pOutput->error_f("Invalid container specified.  You input: %s", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Invalid container specified.  You input: %s", Args[3].c_str());
             return;
         }
     }
@@ -195,7 +195,7 @@ void Bellhop::SellAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
     std::list<ItemData_t> items = GetMatchingItems(Args[2], 0);
     if (items.size() == 0)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
 
@@ -235,21 +235,21 @@ void Bellhop::SellAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     if (resultCount == 0)
     {
-        pOutput->error("None of the matching items can be sold.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "None of the matching items can be sold.");
         return;
     }
-    else if ((results.size() > 1) && (mSettings.ShortOutput))
+    else if ((results.size() > 1) && (mConfig.GetShortOutput()))
     {
-        pOutput->message_f("Selling $H%u matching items$R to $H%s$R.", resultCount, mState.ShopName.c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Selling $H%u matching items$R to $H%s$R.", resultCount, mState.ShopName.c_str());
     }
     else
     {
         for (std::list<ItemActionInfo>::iterator iter = results.begin(); iter != results.end(); iter++)
         {
             if (iter->Count == 1)
-                pOutput->message_f("Selling a $H%s$R to $H%s$R.", iter->Resource->LogNameSingular[0], mState.ShopName.c_str());
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Selling a $H%s$R to $H%s$R.", iter->Resource->LogNameSingular[0], mState.ShopName.c_str());
             else
-                pOutput->message_f("Selling $H%u %s$R to $H%s$R.", iter->Count, iter->Resource->LogNamePlural[0], mState.ShopName.c_str());
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Selling $H%u %s$R to $H%s$R.", iter->Count, iter->Resource->LogNamePlural[0], mState.ShopName.c_str());
         }
     }
 }

@@ -11,45 +11,6 @@
 #include <stdint.h>
 #include <string>
 
-enum class AutoTradeSetting
-{
-    Accept,
-    Deny,
-    Ignore
-};
-
-struct Settings_t
-{
-    bool NomadStorage;
-    bool EnforceTradeWindow;
-    bool IgnoreCraftSkill;
-    bool LegacyCommands;
-    bool ShortOutput;
-    uint32_t RetryDelay;
-    std::list<int> ForceDisableBags;
-    std::list<int> ForceEnableBags;
-
-    AutoTradeSetting Default;
-    std::list<string> WhiteList;
-    std::list<string> BlackList;
-    std::map<string, std::list<uint16_t>> ItemTypes;
-
-    Settings_t()
-        : Default(AutoTradeSetting::Ignore)
-        , NomadStorage(false)
-        , IgnoreCraftSkill(false)
-        , EnforceTradeWindow(false)
-        , LegacyCommands(true)
-        , ShortOutput(false)
-        , RetryDelay(3000)
-        , ForceEnableBags(std::list<int>())
-        , ForceDisableBags(std::list<int>())
-        , BlackList(std::list<string>())
-        , WhiteList(std::list<string>())
-        , ItemTypes(std::map<string, std::list<uint16_t>>())
-    {}
-};
-
 enum class TradeState
 {
     TradeClosed,

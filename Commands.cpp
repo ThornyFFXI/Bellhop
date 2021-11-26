@@ -7,7 +7,7 @@ bool Bellhop::HandleCommand(int32_t mode, const char* command, bool injected)
 
     std::vector<string> args;
     int argcount = 0;
-    if (mSettings.LegacyCommands)
+    if (mConfig.GetLegacyCommands())
         argcount = ParseLegacyCommands(command, &args);
     else
         argcount = Ashita::Commands::GetCommandArgs(command, &args);
@@ -255,9 +255,9 @@ uint32_t Bellhop::ParseLegacyCommands(const char* command, std::vector<std::stri
         {
             args->push_back("/bh");
             args->push_back("default");
-            if (mSettings.Default == AutoTradeSetting::Accept)
+            if (mConfig.GetAutoTradeSetting() == AutoTradeSetting::Accept)
                 args->push_back("deny");
-            else if (mSettings.Default == AutoTradeSetting::Deny)
+            else if (mConfig.GetAutoTradeSetting() == AutoTradeSetting::Deny)
                 args->push_back("ignore");
             else
                 args->push_back("accept");

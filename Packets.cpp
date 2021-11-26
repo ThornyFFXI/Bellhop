@@ -44,12 +44,11 @@ bool Bellhop::HandleOutgoingPacket(uint16_t id, uint32_t size, const uint8_t* da
 }
 void Bellhop::HandleIncomingPacket_00A(uint32_t size, const uint8_t* data)
 {
-    //Server told us we're zoning in, so record char name and reset states.
+    ConfigLoader::pLoader->Handle0x00A(data);
     std::string currentName((const char*)data + 0x84);
     if (currentName != mState.MyName)
     {
         mState.MyName = currentName;
-        LoadSettings();
     }
     mState.MyId = Read32(data, 4);
     mState.TradeState = TradeState::TradeClosed;
@@ -134,7 +133,7 @@ void Bellhop::HandleIncomingPacket_03C(uint32_t size, const uint8_t* data)
         mState.ShopStock.clear();
         mState.ShopActive = true;
         mState.ShopName   = m_AshitaCore->GetMemoryManager()->GetEntity()->GetName(mState.ShopIndex);
-        pOutput->message_f("Entered shop.  [$H%s$R]", mState.ShopName.c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Entered shop.  [$H%s$R]", mState.ShopName.c_str());
     }
 
     for (int x = 8; (x + 7) < size; x += 12)
@@ -145,7 +144,7 @@ void Bellhop::HandleIncomingPacket_03C(uint32_t size, const uint8_t* data)
         entry.Price   = Read32(data, x);
         entry.Resource = m_AshitaCore->GetResourceManager()->GetItemById(Read16(data, x + 4));
 
-        if (!mSettings.IgnoreCraftSkill)
+        if (mConfig.GetIgnoreCraftSkill())
         {
             uint16_t craftSkill = Read16(data, x + 8);
             if (craftSkill != 0)
@@ -180,7 +179,7 @@ void Bellhop::HandleOutgoingPacket_015(uint32_t size, const uint8_t* data)
         if ((m_AshitaCore->GetMemoryManager()->GetEntity()->GetRawEntity(mState.ShopIndex) == NULL) || ((m_AshitaCore->GetMemoryManager()->GetEntity()->GetRenderFlags0(mState.ShopIndex) & 0x200) == 0))
         {
             mState.ShopActive = false;
-            pOutput->message_f("Left shop.  [$H%s$R]", mState.ShopName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Left shop.  [$H%s$R]", mState.ShopName.c_str());
             mState.ShopStock.clear();
             return;
         }
@@ -189,7 +188,7 @@ void Bellhop::HandleOutgoingPacket_015(uint32_t size, const uint8_t* data)
         if (Distance >= 36.0f)
         {
             mState.ShopActive = false;
-            pOutput->message_f("Left shop.  [$H%s$R]", mState.ShopName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Left shop.  [$H%s$R]", mState.ShopName.c_str());
             mState.ShopStock.clear();
             return;
         }
@@ -203,7 +202,7 @@ void Bellhop::HandleOutgoingPacket_01A(uint32_t size, const uint8_t* data)
         if (mState.ShopActive)
         {
             mState.ShopActive = false;
-            pOutput->message_f("Left shop.  [$H%s$R]", mState.ShopName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Left shop.  [$H%s$R]", mState.ShopName.c_str());
             mState.ShopStock.clear();
         }
 

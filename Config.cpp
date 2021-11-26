@@ -10,21 +10,18 @@ void Bellhop::Default(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     if (_stricmp(Args[2].c_str(), "accept") == 0)
     {
-        mSettings.Default = AutoTradeSetting::Accept;
-        pOutput->message("AutoTrade default set to $Haccept$R.");
-        SaveSettings();
+        mConfig.SetAutoTradeSetting(AutoTradeSetting::Accept);
+        OutputHelper::Output(Ashita::LogLevel::Info, "AutoTrade default set to $Haccept$R.");
     }
     else if (_stricmp(Args[2].c_str(), "deny") == 0)
     {
-        mSettings.Default = AutoTradeSetting::Deny;
-        pOutput->message("AutoTrade default set to $Hdeny$R.");
-        SaveSettings();
+        mConfig.SetAutoTradeSetting(AutoTradeSetting::Deny);
+        OutputHelper::Output(Ashita::LogLevel::Info, "AutoTrade default set to $Hdeny$R.");
     }
     else if (_stricmp(Args[2].c_str(), "ignore") == 0)
     {
-        mSettings.Default = AutoTradeSetting::Ignore;
-        pOutput->message("AutoTrade default set to $Hignore$R.");
-        SaveSettings();
+        mConfig.SetAutoTradeSetting(AutoTradeSetting::Ignore);
+        OutputHelper::Output(Ashita::LogLevel::Info, "AutoTrade default set to $Hignore$R.");
     }
     else
     {
@@ -48,20 +45,22 @@ void Bellhop::BlackList(vector<string> Args, int ArgCount, CommandHelp HelpText)
             return;
         }
 
-        std::string cleanName = FormatName(Args[3]);
+        std::string cleanName = BellhopConfig::FormatName(Args[3]);
         if (cleanName.length() == 0)
         {
-            pOutput->error_f("Invalid name used: %s", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Invalid name used: %s", Args[3].c_str());
             return;
         }
 
-        if (AddToList(&(mSettings.BlackList), cleanName))
+        std::vector<std::string> blacklist = mConfig.GetBlacklist();
+        if (std::find(blacklist.begin(), blacklist.end(), cleanName) == blacklist.end())
         {
-            pOutput->message_f("$H%s$R added to trade blacklist.", cleanName.c_str());
-            SaveSettings();
+            blacklist.push_back(cleanName);
+            mConfig.SetBlacklist(blacklist);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R added to trade blacklist.", cleanName.c_str());
         }
         else
-            pOutput->message_f("$H%s$R was already in your trade blacklist.", cleanName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R was already in your trade blacklist.", cleanName.c_str());
     }
 
     else if (_stricmp(Args[2].c_str(), "remove") == 0)
@@ -72,37 +71,40 @@ void Bellhop::BlackList(vector<string> Args, int ArgCount, CommandHelp HelpText)
             return;
         }
 
-        std::string cleanName = FormatName(Args[3]);
+        std::string cleanName = BellhopConfig::FormatName(Args[3]);
         if (cleanName.length() == 0)
         {
-            pOutput->error_f("Invalid name used: %s", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Invalid name used: %s", Args[3].c_str());
             return;
         }
 
-        if (RemoveFromList(&(mSettings.BlackList), cleanName))
+        std::vector<std::string> blacklist = mConfig.GetBlacklist();
+        auto iter                          = std::find(blacklist.begin(), blacklist.end(), cleanName);
+        if (iter != blacklist.end())
         {
-            pOutput->message_f("$H%s$R removed from trade blacklist.", cleanName.c_str());
-            SaveSettings();
+            blacklist.erase(iter);
+            mConfig.SetBlacklist(blacklist);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R removed from trade blacklist.", cleanName.c_str());
         }
         else
-            pOutput->message_f("$H%s$R was not in your trade blacklist.", cleanName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R was not in your trade blacklist.", cleanName.c_str());
     }
 
     else if (_stricmp(Args[2].c_str(), "clear") == 0)
     {
-        mSettings.BlackList.clear();
-        pOutput->message("Trade blacklist cleared.");
-        SaveSettings();
+        mConfig.SetBlacklist(std::vector<std::string>());
+        OutputHelper::Output(Ashita::LogLevel::Info, "Trade blacklist cleared.");
     }
 
     else if (_stricmp(Args[2].c_str(), "print") == 0)
     {
-        pOutput->message("$HTrade Blacklist");
-        if (mSettings.BlackList.size() == 0)
-            pOutput->message("[empty]");
-        for (std::list<string>::iterator iter = mSettings.BlackList.begin(); iter != mSettings.BlackList.end(); iter++)
+        std::vector<std::string> blacklist = mConfig.GetBlacklist();
+        OutputHelper::Output(Ashita::LogLevel::Info, "$HTrade Blacklist");
+        if (blacklist.size() == 0)
+            OutputHelper::Output(Ashita::LogLevel::Info, "[empty]");
+        for (std::vector<string>::iterator iter = blacklist.begin(); iter != blacklist.end(); iter++)
         {
-            pOutput->message_f("%s", iter->c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "%s", iter->c_str());
         }
     }
 
@@ -128,20 +130,22 @@ void Bellhop::WhiteList(vector<string> Args, int ArgCount, CommandHelp HelpText)
             return;
         }
 
-        std::string cleanName = FormatName(Args[3]);
+        std::string cleanName = BellhopConfig::FormatName(Args[3]);
         if (cleanName.length() == 0)
         {
-            pOutput->error_f("Invalid name used: %s", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Invalid name used: %s", Args[3].c_str());
             return;
         }
 
-        if (AddToList(&(mSettings.WhiteList), cleanName))
+        std::vector<std::string> whitelist = mConfig.GetWhitelist();
+        if (std::find(whitelist.begin(), whitelist.end(), cleanName) == whitelist.end())
         {
-            pOutput->message_f("$H%s$R added to trade whitelist.", cleanName.c_str());
-            SaveSettings();
+            whitelist.push_back(cleanName);
+            mConfig.SetWhitelist(whitelist);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R added to trade whitelist.", cleanName.c_str());
         }
         else
-            pOutput->message_f("$H%s$R was already in your trade whitelist.", cleanName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R was already in your trade whitelist.", cleanName.c_str());
     }
 
     else if (_stricmp(Args[2].c_str(), "remove") == 0)
@@ -152,37 +156,40 @@ void Bellhop::WhiteList(vector<string> Args, int ArgCount, CommandHelp HelpText)
             return;
         }
 
-        std::string cleanName = FormatName(Args[3]);
+        std::string cleanName = BellhopConfig::FormatName(Args[3]);
         if (cleanName.length() == 0)
         {
-            pOutput->error_f("Invalid name used: %s", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Invalid name used: %s", Args[3].c_str());
             return;
         }
 
-        if (RemoveFromList(&(mSettings.WhiteList), cleanName))
+        std::vector<std::string> whitelist = mConfig.GetWhitelist();
+        auto iter                          = std::find(whitelist.begin(), whitelist.end(), cleanName);
+        if (iter != whitelist.end())
         {
-            pOutput->message_f("$H%s$R removed from trade whitelist.", cleanName.c_str());
-            SaveSettings();
+            whitelist.erase(iter);
+            mConfig.SetWhitelist(whitelist);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R removed from trade whitelist.", cleanName.c_str());
         }
         else
-            pOutput->message_f("$H%s$R was not in your trade whitelist.", cleanName.c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R was not in your trade whitelist.", cleanName.c_str());
     }
 
     else if (_stricmp(Args[2].c_str(), "clear") == 0)
     {
-        mSettings.WhiteList.clear();
-        pOutput->message("Trade whitelist cleared.");
-        SaveSettings();
+        mConfig.SetWhitelist(std::vector<std::string>());
+        OutputHelper::Output(Ashita::LogLevel::Info, "Trade whitelist cleared.");
     }
 
     else if (_stricmp(Args[2].c_str(), "print") == 0)
     {
-        pOutput->message("$HTrade Whitelist");
-        if (mSettings.WhiteList.size() == 0)
-            pOutput->message("[empty]");
-        for (std::list<string>::iterator iter = mSettings.WhiteList.begin(); iter != mSettings.WhiteList.end(); iter++)
+        std::vector<std::string> whitelist = mConfig.GetWhitelist();
+        OutputHelper::Output(Ashita::LogLevel::Info, "$HTrade Whitelist");
+        if (whitelist.size() == 0)
+            OutputHelper::Output(Ashita::LogLevel::Info, "[empty]");
+        for (std::vector<string>::iterator iter = whitelist.begin(); iter != whitelist.end(); iter++)
         {
-            pOutput->message_f("%s", iter->c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "%s", iter->c_str());
         }
     }
 
@@ -211,19 +218,20 @@ void Bellhop::EnableBags(vector<string> Args, int ArgCount, CommandHelp HelpText
         int index = GetContainerIndexFromName(Args[3].c_str());
         if ((index < 0) || (index > CONTAINER_MAX))
         {
-            pOutput->error_f("$H%s$R is not a valid bag.", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "$H%s$R is not a valid bag.", Args[3].c_str());
             return;
         }
 
-        if (std::find(mSettings.ForceEnableBags.begin(), mSettings.ForceEnableBags.end(), index) != mSettings.ForceEnableBags.end())
+        std::vector<int> enabledbags = mConfig.GetEnabledBags();
+        if (std::find(enabledbags.begin(), enabledbags.end(), index) != enabledbags.end())
         {
-            pOutput->message_f("$H%s$R was already in your force enabled bags.", ContainerNames[index]);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R was already in your force enabled bags.", ContainerNames[index]);
         }
         else
         {
-            mSettings.ForceEnableBags.push_back(index);
-            pOutput->message_f("$H%s$R added to force enabled bags.", ContainerNames[index]);
-            SaveSettings();
+            enabledbags.push_back(index);
+            mConfig.SetEnabledBags(enabledbags);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R added to force enabled bags.", ContainerNames[index]);
         }
     }
 
@@ -238,45 +246,37 @@ void Bellhop::EnableBags(vector<string> Args, int ArgCount, CommandHelp HelpText
         int index = GetContainerIndexFromName(Args[3].c_str());
         if ((index < 0) || (index > CONTAINER_MAX))
         {
-            pOutput->error_f("$H%s$R is not a valid bag.", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "$H%s$R is not a valid bag.", Args[3].c_str());
             return;
         }
 
-        std::list<int>::iterator find = std::find(mSettings.ForceEnableBags.begin(), mSettings.ForceEnableBags.end(), index);
-        if (find == mSettings.ForceEnableBags.end())
+        std::vector<int> enabledbags = mConfig.GetEnabledBags();
+        auto iter                    = std::find(enabledbags.begin(), enabledbags.end(), index);
+        if (iter== enabledbags.end())
         {
-            pOutput->message_f("$H%s$R was not in your force enabled bags.", ContainerNames[index]);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R was not in your force enabled bags.", ContainerNames[index]);
         }
         else
         {
-            mSettings.ForceEnableBags.erase(find);
-            pOutput->message_f("$H%s$R removed from force enabled bags.", ContainerNames[index]);
-            SaveSettings();
+            enabledbags.erase(iter);
+            mConfig.SetEnabledBags(enabledbags);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R removed from force enabled bags.", ContainerNames[index]);
         }
     }
 
     else if (_stricmp(Args[2].c_str(), "clear") == 0)
     {
-        if (mSettings.ForceEnableBags.size() == 0)
-        {
-            pOutput->message("You have no force enabled bags.");
-        }
-        else
-        {
-            mSettings.ForceEnableBags.clear();
-            pOutput->message("Force enabled bags cleared.");
-            SaveSettings();
-        }
+        mConfig.SetEnabledBags(std::vector<int>());
+        OutputHelper::Output(Ashita::LogLevel::Info, "Force enabled bags cleared.");
     }
 
     else if (_stricmp(Args[2].c_str(), "print") == 0)
     {
-        pOutput->message("$HForce Enabled Bags");
-        if (mSettings.WhiteList.size() == 0)
-            pOutput->message("[empty]");
-        for (std::list<int>::iterator iter = mSettings.ForceEnableBags.begin(); iter != mSettings.ForceEnableBags.end(); iter++)
+        OutputHelper::Output(Ashita::LogLevel::Info, "$HForce Enabled Bags");
+        std::vector<int> enabledbags = mConfig.GetEnabledBags();
+        for (std::vector<int>::iterator iter = enabledbags.begin(); iter != enabledbags.end(); iter++)
         {
-            pOutput->message_f("%s", ContainerNames[*iter]);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "%s", ContainerNames[*iter]);
         }
     }
 
@@ -305,19 +305,20 @@ void Bellhop::DisableBags(vector<string> Args, int ArgCount, CommandHelp HelpTex
         int index = GetContainerIndexFromName(Args[3].c_str());
         if ((index < 0) || (index > CONTAINER_MAX))
         {
-            pOutput->error_f("$H%s$R is not a valid bag.", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "$H%s$R is not a valid bag.", Args[3].c_str());
             return;
         }
 
-        if (std::find(mSettings.ForceDisableBags.begin(), mSettings.ForceDisableBags.end(), index) != mSettings.ForceDisableBags.end())
+        std::vector<int> disabledbags = mConfig.GetDisabledBags();
+        if (std::find(disabledbags.begin(), disabledbags.end(), index) != disabledbags.end())
         {
-            pOutput->message_f("$H%s$R was already in your force disabled bags.", ContainerNames[index]);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R was already in your force disabled bags.", ContainerNames[index]);
         }
         else
         {
-            mSettings.ForceDisableBags.push_back(index);
-            pOutput->message_f("$H%s$R added to force disabled bags.", ContainerNames[index]);
-            SaveSettings();
+            disabledbags.push_back(index);
+            mConfig.SetDisabledBags(disabledbags);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R added to force disabled bags.", ContainerNames[index]);
         }
     }
 
@@ -332,45 +333,37 @@ void Bellhop::DisableBags(vector<string> Args, int ArgCount, CommandHelp HelpTex
         int index = GetContainerIndexFromName(Args[3].c_str());
         if ((index < 0) || (index > CONTAINER_MAX))
         {
-            pOutput->error_f("$H%s$R is not a valid bag.", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "$H%s$R is not a valid bag.", Args[3].c_str());
             return;
         }
 
-        std::list<int>::iterator find = std::find(mSettings.ForceDisableBags.begin(), mSettings.ForceDisableBags.end(), index);
-        if (find == mSettings.ForceDisableBags.end())
+        std::vector<int> disabledbags = mConfig.GetDisabledBags();
+        auto iter                     = std::find(disabledbags.begin(), disabledbags.end(), index);
+        if (iter == disabledbags.end())
         {
-            pOutput->message_f("$H%s$R was not in your force disabled bags.", ContainerNames[index]);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R was not in your force disabled bags.", ContainerNames[index]);
         }
         else
         {
-            mSettings.ForceDisableBags.erase(find);
-            pOutput->message_f("$H%s$R removed from force disabled bags.", ContainerNames[index]);
-            SaveSettings();
+            disabledbags.erase(iter);
+            mConfig.SetDisabledBags(disabledbags);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s$R removed from force disabled bags.", ContainerNames[index]);
         }
     }
 
     else if (_stricmp(Args[2].c_str(), "clear") == 0)
     {
-        if (mSettings.ForceDisableBags.size() == 0)
-        {
-            pOutput->message("You have no force disabled bags.");
-        }
-        else
-        {
-            mSettings.ForceDisableBags.clear();
-            pOutput->message("Force disabled bags cleared.");
-            SaveSettings();
-        }
+        mConfig.SetDisabledBags(std::vector<int>());
+        OutputHelper::Output(Ashita::LogLevel::Info, "Force disabled bags cleared.");
     }
 
     else if (_stricmp(Args[2].c_str(), "print") == 0)
     {
-        pOutput->message("$HForce Disabled Bags");
-        if (mSettings.WhiteList.size() == 0)
-            pOutput->message("[empty]");
-        for (std::list<int>::iterator iter = mSettings.ForceDisableBags.begin(); iter != mSettings.ForceDisableBags.end(); iter++)
+        OutputHelper::Output(Ashita::LogLevel::Info, "$HForce Disabled Bags");
+        std::vector<int> disabledbags = mConfig.GetDisabledBags();
+        for (std::vector<int>::iterator iter = disabledbags.begin(); iter != disabledbags.end(); iter++)
         {
-            pOutput->message_f("%s", ContainerNames[*iter]);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "%s", ContainerNames[*iter]);
         }
     }
 
@@ -399,19 +392,17 @@ void Bellhop::Config(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
         if (_stricmp(Args[3].c_str(), "enable") == 0)
         {
-            mSettings.NomadStorage = true;
-            pOutput->message("NomadStorage $Henabled$R.");
-            SaveSettings();
+            mConfig.SetNomadStorage(true);
+            OutputHelper::Output(Ashita::LogLevel::Info, "NomadStorage $Henabled$R.");
         }
         else if (_stricmp(Args[3].c_str(), "disable") == 0)
         {
-            mSettings.NomadStorage = false;
-            pOutput->message("NomadStorage $Hdisabled$R.");
-            SaveSettings();
+            mConfig.SetNomadStorage(false);
+            OutputHelper::Output(Ashita::LogLevel::Info, "NomadStorage $Hdisabled$R.");
         }
         else
         {
-            pOutput->error_f("You must specify 'enable' or 'disable' to change NomadStorage setting.");
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "You must specify 'enable' or 'disable' to change NomadStorage setting.");
         }
     }
 
@@ -425,19 +416,17 @@ void Bellhop::Config(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
         if (_stricmp(Args[3].c_str(), "enable") == 0)
         {
-            mSettings.IgnoreCraftSkill = true;
-            pOutput->message("IgnoreCraftSkill $Henabled$R.");
-            SaveSettings();
+            mConfig.SetIgnoreCraftSkill(true);
+            OutputHelper::Output(Ashita::LogLevel::Info, "IgnoreCraftSkill $Henabled$R.");
         }
         else if (_stricmp(Args[3].c_str(), "disable") == 0)
         {
-            mSettings.IgnoreCraftSkill = false;
-            pOutput->message("IgnoreCraftSkill $Hdisabled$R.");
-            SaveSettings();
+            mConfig.SetIgnoreCraftSkill(false);
+            OutputHelper::Output(Ashita::LogLevel::Info, "IgnoreCraftSkill $Hdisabled$R.");
         }
         else
         {
-            pOutput->error_f("You must specify 'enable' or 'disable' to change IgnoreCraftSkill setting.");
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "You must specify 'enable' or 'disable' to change IgnoreCraftSkill setting.");
         }
     }
 
@@ -451,19 +440,17 @@ void Bellhop::Config(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
         if (_stricmp(Args[3].c_str(), "enable") == 0)
         {
-            mSettings.EnforceTradeWindow = true;
-            pOutput->message("EnforceTradeWindow $Henabled$R.");
-            SaveSettings();
+            mConfig.SetEnforceTradeWindow(true);
+            OutputHelper::Output(Ashita::LogLevel::Info, "EnforceTradeWindow $Henabled$R.");
         }
         else if (_stricmp(Args[3].c_str(), "disable") == 0)
         {
-            mSettings.EnforceTradeWindow = false;
-            pOutput->message("EnforceTradeWindow $Hdisabled$R.");
-            SaveSettings();
+            mConfig.SetEnforceTradeWindow(false);
+            OutputHelper::Output(Ashita::LogLevel::Info, "EnforceTradeWindow $Hdisabled$R.");
         }
         else
         {
-            pOutput->error_f("You must specify 'enable' or 'disable' to change EnforceTradeWindow setting.");
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "You must specify 'enable' or 'disable' to change EnforceTradeWindow setting.");
         }
     }
 
@@ -477,19 +464,17 @@ void Bellhop::Config(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
         if (_stricmp(Args[3].c_str(), "enable") == 0)
         {
-            mSettings.LegacyCommands = true;
-            pOutput->message("LegacyCommands $Henabled$R.");
-            SaveSettings();
+            mConfig.SetLegacyCommands(true);
+            OutputHelper::Output(Ashita::LogLevel::Info, "LegacyCommands $Henabled$R.");
         }
         else if (_stricmp(Args[3].c_str(), "disable") == 0)
         {
-            mSettings.LegacyCommands = false;
-            pOutput->message("LegacyCommands $Hdisabled$R.");
-            SaveSettings();
+            mConfig.SetLegacyCommands(false);
+            OutputHelper::Output(Ashita::LogLevel::Info, "LegacyCommands $Hdisabled$R.");
         }
         else
         {
-            pOutput->error_f("You must specify 'enable' or 'disable' to change LegacyCommands setting.");
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "You must specify 'enable' or 'disable' to change LegacyCommands setting.");
         }
     }
 
@@ -503,19 +488,17 @@ void Bellhop::Config(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
         if (_stricmp(Args[3].c_str(), "enable") == 0)
         {
-            mSettings.ShortOutput = true;
-            pOutput->message("ShortOutput $Henabled$R.");
-            SaveSettings();
+            mConfig.SetShortOutput(true);
+            OutputHelper::Output(Ashita::LogLevel::Info, "ShortOutput $Henabled$R.");
         }
         else if (_stricmp(Args[3].c_str(), "disable") == 0)
         {
-            mSettings.ShortOutput = false;
-            pOutput->message("ShortOutput $Hdisabled$R.");
-            SaveSettings();
+            mConfig.SetShortOutput(false);
+            OutputHelper::Output(Ashita::LogLevel::Info, "ShortOutput $Hdisabled$R.");
         }
         else
         {
-            pOutput->error_f("You must specify 'enable' or 'disable' to change ShortOutput setting.");
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "You must specify 'enable' or 'disable' to change ShortOutput setting.");
         }
     }
 
@@ -527,15 +510,7 @@ void Bellhop::Config(vector<string> Args, int ArgCount, CommandHelp HelpText)
             return;
         }
 
-        uint16_t Value = StringToUint16OrZero(Args[3]);
-        if ((Value == 0) || (Value > 9999))
-        {
-            pOutput->error("You must put a valid number between 1 and 9999 for retrydelay.");
-            return;
-        }
-
-        mSettings.RetryDelay = Value;
-        pOutput->message_f("RetryDelay set to $H%d$R.", mSettings.RetryDelay);
-        SaveSettings();
+        mConfig.SetRetryDelay(static_cast<uint32_t>(atoi(Args[3].c_str())));
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "RetryDelay set to $H%d$R.", mConfig.GetRetryDelay());
     }
 }

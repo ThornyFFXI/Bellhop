@@ -8,9 +8,9 @@ void Bellhop::TradeToPlayer(vector<string> Args, int ArgCount, CommandHelp HelpT
         return;
     }
 
-    if ((mSettings.EnforceTradeWindow) && ((mState.TradeState != TradeState::TradeOpen) && (mState.TradeState != TradeState::TradeConfirmedByOther)))
+    if ((mConfig.GetEnforceTradeWindow()) && ((mState.TradeState != TradeState::TradeOpen) && (mState.TradeState != TradeState::TradeConfirmedByOther)))
     {
-        pOutput->error("You must have trade open to use this command.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You must have trade open to use this command.");
         return;
     }
 
@@ -107,12 +107,12 @@ void Bellhop::TradeToPlayer(vector<string> Args, int ArgCount, CommandHelp HelpT
         {
             if (currentSlot == 9)
             {
-                pOutput->error("Requested trade could not be fit in available trade slots.");
+                OutputHelper::Output(Ashita::LogLevel::Error, "Requested trade could not be fit in available trade slots.");
                 return;
             }
             else
             {
-                pOutput->error_f("Only found $H%d/%d$R items matching the term $H%s$R.", itemsFound, quantity, Args[x].c_str());
+                OutputHelper::Outputf(Ashita::LogLevel::Error, "Only found $H%d/%d$R items matching the term $H%s$R.", itemsFound, quantity, Args[x].c_str());
                 return;
             }
         }
@@ -127,7 +127,7 @@ void Bellhop::TradeToPlayer(vector<string> Args, int ArgCount, CommandHelp HelpT
     pk_TradePlayer packet;
     packet.Type      = 2;
     m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x33, 12, (uint8_t*)(&packet));
-    pOutput->message_f("Traded $H%d$R matching items to $H%s$R.", totalCount, mState.TradeName.c_str());
+    OutputHelper::Outputf(Ashita::LogLevel::Info, "Traded $H%d$R matching items to $H%s$R.", totalCount, mState.TradeName.c_str());
 }
 void Bellhop::TradeAllToPlayer(vector<string> Args, int ArgCount, CommandHelp HelpText)
 {
@@ -137,9 +137,9 @@ void Bellhop::TradeAllToPlayer(vector<string> Args, int ArgCount, CommandHelp He
         return;
     }
 
-    if ((mSettings.EnforceTradeWindow) && ((mState.TradeState != TradeState::TradeOpen) && (mState.TradeState != TradeState::TradeConfirmedByOther)))
+    if ((mConfig.GetEnforceTradeWindow()) && ((mState.TradeState != TradeState::TradeOpen) && (mState.TradeState != TradeState::TradeConfirmedByOther)))
     {
-        pOutput->error("You must have trade open to use this command.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You must have trade open to use this command.");
         return;
     }
 
@@ -150,7 +150,7 @@ void Bellhop::TradeAllToPlayer(vector<string> Args, int ArgCount, CommandHelp He
     }
     if (items.size() == 0)
     {
-        pOutput->error("No matching items found.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "No matching items found.");
         return;
     }
 
@@ -203,12 +203,12 @@ void Bellhop::TradeAllToPlayer(vector<string> Args, int ArgCount, CommandHelp He
 
     if (tradeCount == 0)
     {
-        pOutput->error("No matching items could be traded.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "No matching items could be traded.");
         return;
     }
 
     pk_TradePlayer packet;
     packet.Type       = 2;
     m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x33, 12, (uint8_t*)(&packet));
-    pOutput->message_f("Traded $H%d$R matching items to $H%s$R.", tradeCount, mState.TradeName.c_str());
+    OutputHelper::Outputf(Ashita::LogLevel::Info, "Traded $H%d$R matching items to $H%s$R.", tradeCount, mState.TradeName.c_str());
 }

@@ -25,7 +25,7 @@ void Bellhop::LoadSettings(std::string Path)
     xml_document<>* XMLReader = pSettings->LoadSettingsXml(Path);
     if (XMLReader == NULL)
     {
-        pOutput->error_f("Could not load settings file.  Resetting to defaults.  [$H%s$R]", Path.c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "Could not load settings file.  Resetting to defaults.  [$H%s$R]", Path.c_str());
         return;
     }
 
@@ -34,7 +34,7 @@ void Bellhop::LoadSettings(std::string Path)
     if (!Node)
     {
         pSettings->UnloadSettings();
-        pOutput->error_f("Settings file did not have a bellhop node at root level.  Resetting to defaults.  [$H%s$R]", Path.c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "Settings file did not have a bellhop node at root level.  Resetting to defaults.  [$H%s$R]", Path.c_str());
         return;
     }
 
@@ -232,7 +232,7 @@ void Bellhop::SaveSettings()
     ofstream outStream(Path.c_str());
     if (!outStream.is_open())
     {
-        pOutput->error_f("Failed to write file.  [%s]", Path.c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "Failed to write file.  [%s]", Path.c_str());
         return;
     }
 
@@ -248,14 +248,14 @@ void Bellhop::SaveSettings(std::string Path)
     ofstream outStream(Path.c_str());
     if (!outStream.is_open())
     {
-        pOutput->error_f("Failed to write file.  [%s]", Path.c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "Failed to write file.  [%s]", Path.c_str());
         return;
     }
 
     WriteSettings(&outStream);
 
     outStream.close();
-    pOutput->message_f("Wrote settings XML. [$H%s$R]", Path.c_str());
+    OutputHelper::Outputf(Ashita::LogLevel::Info, "Wrote settings XML. [$H%s$R]", Path.c_str());
 }
 void Bellhop::WriteSettings(ofstream * outStream)
 {

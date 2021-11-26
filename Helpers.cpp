@@ -9,8 +9,9 @@ std::list<ItemData_t> Bellhop::GetMatchingItemsNoInventory(std::string Parameter
 
     if (Parameter.substr(0, 5) == "TYPE:")
     {
-        std::map<std::string, std::list<uint16_t>>::iterator iter = mSettings.ItemTypes.find(Parameter.substr(5));
-        if (iter != mSettings.ItemTypes.end())
+        auto itemTypes                                              = mConfig.GetItemTypes();
+        ItemTypeMap::iterator iter = itemTypes.find(Parameter.substr(5));
+        if (iter != itemTypes.end())
         {
             for (int x = 1; x < CONTAINER_MAX; x++)
             {
@@ -63,8 +64,9 @@ std::list<ItemData_t> Bellhop::GetMatchingItems(std::string Parameter, int Conta
 
     if (Parameter.substr(0, 5) == "TYPE:")
     {
-        std::map<std::string, std::list<uint16_t>>::iterator iter = mSettings.ItemTypes.find(Parameter.substr(5));
-        if (iter != mSettings.ItemTypes.end())
+        auto itemTypes                                            = mConfig.GetItemTypes();
+        ItemTypeMap::iterator iter = itemTypes.find(Parameter.substr(5));
+        if (iter != itemTypes.end())
         {
             GetMatchingItemsByType(iter->second, Container, &ItemList);
         }
@@ -102,7 +104,7 @@ int Bellhop::GetMatchingItemsByWildcard(std::string Parameter, int Container, st
         if ((!pResource) || (strlen(pResource->Name[0]) < 1))
             continue;
 
-        if (CheckWildcardMatch(Parameter.c_str(), pResource->Name[0]))
+        if (BellhopConfig::CheckWildcardMatch(Parameter.c_str(), pResource->Name[0]))
         {
             Output->push_back(ItemData_t(Container, pResource, pItem));
         }
@@ -127,7 +129,7 @@ int Bellhop::GetMatchingItemsByResource(IItem* pResource, int Container, std::li
 
     return count;
 }
-int Bellhop::GetMatchingItemsByType(std::list<uint16_t> Ids, int Container, std::list<ItemData_t>* Output)
+int Bellhop::GetMatchingItemsByType(std::vector<uint16_t> Ids, int Container, std::list<ItemData_t>* Output)
 {
     int count        = 0;
     IInventory* pInv = m_AshitaCore->GetMemoryManager()->GetInventory();
@@ -176,10 +178,11 @@ bool Bellhop::CheckItemMatch(std::string Parameter, IItem* pResource)
 {
     if (Parameter.substr(0, 5) == "TYPE:")
     {
-        std::map<std::string, std::list<uint16_t>>::iterator iter = mSettings.ItemTypes.find(Parameter.substr(5));
-        if (iter != mSettings.ItemTypes.end())
+        auto itemTypes                                            = mConfig.GetItemTypes();
+        ItemTypeMap::iterator iter = itemTypes.find(Parameter.substr(5));
+        if (iter != itemTypes.end())
         {
-            for (std::list<uint16_t>::iterator itemIter = iter->second.begin(); itemIter != iter->second.end(); itemIter++)
+            for (std::vector<uint16_t>::iterator itemIter = iter->second.begin(); itemIter != iter->second.end(); itemIter++)
             {
                 if (*itemIter == pResource->Id)
                     return true;
@@ -196,33 +199,8 @@ bool Bellhop::CheckItemMatch(std::string Parameter, IItem* pResource)
     }
     else
     {
-        return CheckWildcardMatch(Parameter.c_str(), pResource->Name[0]);
+        return BellhopConfig::CheckWildcardMatch(Parameter.c_str(), pResource->Name[0]);
     }
-}
-bool Bellhop::CheckWildcardMatch(const char* wc, const char* compare)
-{
-    while (*wc)
-    {
-        if (wc[0] == '*')
-        {
-            if (wc[1] == 0)
-                return true;
-            while (*compare)
-            {
-                if (CheckWildcardMatch((wc + 1), compare))
-                {
-                    return true;
-                }
-                compare++;
-            }
-            return false;
-        }
-        if ((wc[0] | 32) != (compare[0] | 32))
-            return false;
-        wc++;
-        compare++;
-    }
-    return (*compare == 0);
 }
 void Bellhop::CheckContainers(uint8_t* buffer)
 {
@@ -254,7 +232,7 @@ void Bellhop::CheckContainers(uint8_t* buffer)
 
     buffer[0]  = true;                                               //Always have inventory.
     buffer[1]  = (atNomad || inMog);                                 //Safe
-    buffer[2]  = (inMog || (atNomad && mSettings.NomadStorage)); //Storage
+    buffer[2]  = (inMog || (atNomad && mConfig.GetNomadStorage())); //Storage
     buffer[3]  = false;                                              //Never have temp items.
     buffer[4]  = (atNomad || inMog);                                 //Locker
     buffer[5]  = ((Read8(Memloc, 0xB4) & 0x01) != 0);                //Satchel
@@ -266,12 +244,13 @@ void Bellhop::CheckContainers(uint8_t* buffer)
     buffer[11] = ((Read8(Memloc, 0xB4) & 0x04) != 0);                //Wardrobe3
     buffer[12] = ((Read8(Memloc, 0xB4) & 0x08) != 0);                //Wardrobe4
 
-    for (std::list<int>::iterator iter = mSettings.ForceEnableBags.begin(); iter != mSettings.ForceEnableBags.end(); iter++)
+    auto enabledbags = mConfig.GetEnabledBags();
+    for (auto iter = enabledbags.begin(); iter != enabledbags.end(); iter++)
     {
         buffer[*iter] = true;
     }
 
-    for (std::list<int>::iterator iter = mSettings.ForceDisableBags.begin(); iter != mSettings.ForceDisableBags.end(); iter++)
+    for (auto iter = enabledbags.begin(); iter != enabledbags.end(); iter++)
     {
         buffer[*iter] = false;
     }
@@ -284,39 +263,27 @@ int Bellhop::GetAvailableSpace(int Container)
 }
 AutoTradeSetting Bellhop::GetTradeResponse(std::string Name)
 {
-    for (std::list<std::string>::iterator iter = mSettings.BlackList.begin(); iter != mSettings.BlackList.end(); iter++)
+    auto blacklist = mConfig.GetBlacklist();
+    for (auto iter = blacklist.begin(); iter != blacklist.end(); iter++)
     {
         if (*iter == Name)
             return AutoTradeSetting::Deny;
     }
 
-    for (std::list<std::string>::iterator iter = mSettings.WhiteList.begin(); iter != mSettings.WhiteList.end(); iter++)
+    auto whitelist = mConfig.GetWhitelist();
+    for (auto iter = whitelist.begin(); iter != whitelist.end(); iter++)
     {
         if (*iter == Name)
             return AutoTradeSetting::Accept;
     }
 
-    return mSettings.Default;
+    return mConfig.GetAutoTradeSetting();
 }
 void Bellhop::PrintHelpText(CommandHelp help, bool Description)
 {
-    pOutput->message_f("$H%s", help.command.c_str());
+    OutputHelper::Outputf(Ashita::LogLevel::Info, "$H%s", help.command.c_str());
     if (Description)
-        pOutput->message(help.description);
-}
-std::string Bellhop::FormatName(std::string Input)
-{
-    std::string buffer = std::string();
-    for (int x = 0; x < Input.length(); x++)
-    {
-        if (!isalpha(Input[x]))
-            return std::string();
-        else if (buffer.length() == 0)
-            buffer += toupper(Input[x]);
-        else
-            buffer += tolower(Input[x]);
-    }
-    return buffer;
+        OutputHelper::Output(Ashita::LogLevel::Info, help.description);
 }
 bool Bellhop::AddToList(std::list<string>* List, std::string Name)
 {

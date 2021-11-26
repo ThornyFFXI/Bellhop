@@ -1,6 +1,7 @@
 #include "Bellhop.h"
 #pragma comment(lib, "psapi.lib")
 #include <psapi.h>
+OutputHelper* OutputHelper::pOutputHelper = nullptr;
 
 const char* ContainerNames[CONTAINER_MAX] =
     {
@@ -34,7 +35,9 @@ bool Bellhop::Initialize(IAshitaCore* core, ILogManager* logger, const uint32_t 
 {
     m_AshitaCore = core;
     m_LogManager = logger;
-    m_PluginId = id;
+    m_PluginId   = id;
+    OutputHelper::Initialize(core, logger, "Bellhop");
+    ConfigLoader::pLoader = new ConfigLoader(core, &mConfig);
 
     MODULEINFO mod = {0};
     ::GetModuleInformation(::GetCurrentProcess(), ::GetModuleHandle("FFXiMain.dll"), &mod, sizeof(MODULEINFO));
@@ -43,44 +46,43 @@ bool Bellhop::Initialize(IAshitaCore* core, ILogManager* logger, const uint32_t 
 
     if (pWardrobe == 0)
     {
-        m_AshitaCore->GetChatManager()->Writef(ERROR_COLOR, false, "%s: Wardrobe status signature scan failed.", Ashita::Chat::Header(GetName()).c_str());
+        OutputHelper::Output(Ashita::LogLevel::Error, "Wardrobe status signature scan failed.");
+        OutputHelper::Destroy();
         return false;
     }
 
     if (pZoneFlags == 0)
     {
-        m_AshitaCore->GetChatManager()->Writef(ERROR_COLOR, false, "%s: Zone flag signature scan failed.", Ashita::Chat::Header(GetName()).c_str());
+        OutputHelper::Output(Ashita::LogLevel::Error, "Zone flag signature scan failed.");
+        OutputHelper::Destroy();
         return false;
     }
 
     pZoneOffset = Read32(pZoneFlags, 0x09);
     if (pZoneOffset == 0)
     {
-        m_AshitaCore->GetChatManager()->Writef(ERROR_COLOR, false, "%s: Zone flag offset not found.", Ashita::Chat::Header(GetName()).c_str());
+        OutputHelper::Output(Ashita::LogLevel::Error, "Zone flag offset not found.");
+        OutputHelper::Destroy();
         return false;
     }
 
     pZoneFlags = Read32(pZoneFlags, 0x17);
     if (pZoneFlags == 0)
     {
-        m_AshitaCore->GetChatManager()->Writef(ERROR_COLOR, false, "%s: Zone flag sub pointer not found.", Ashita::Chat::Header(GetName()).c_str());
+        OutputHelper::Output(Ashita::LogLevel::Error, "Zone flag sub pointer not found.");
+        OutputHelper::Destroy();
         return false;
     }
-
-    pOutput   = new OutputHelpers(core, logger, this->GetName());
-    pSettings = new SettingsHelper(core, pOutput, this->GetName());
-    
+        
     InitializeCommands();
     InitializeState();
-    LoadSettings();
 
     return true;
 }
 
 void Bellhop::Release(void)
 {
-    delete pSettings;
-    delete pOutput;
+    OutputHelper::Destroy();
 }
 
 void Bellhop::InitializeCommands()

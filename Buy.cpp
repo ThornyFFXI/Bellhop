@@ -4,7 +4,7 @@ void Bellhop::Buy(vector<string> Args, int ArgCount, CommandHelp HelpText)
 {
     if (!mState.ShopActive)
     {
-        pOutput->error("You do not currently have a shop active.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You do not currently have a shop active.");
         return;
     }
 
@@ -20,28 +20,28 @@ void Bellhop::Buy(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     if ((quantity < 1) || (quantity > 7920))
     {
-        pOutput->error_f("Quantity must be between 1 and 7920.  You input: %d", quantity);
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "Quantity must be between 1 and 7920.  You input: %d", quantity);
     }
 
     ShopItem_t matchData = {0};
     uint8_t matchSlot    = GetShopItem(Args[2], &matchData);
     if (matchData.Resource == NULL)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
 
     int spaceLimit = GetAvailableSpace(0) * matchData.Resource->StackSize;
     if (spaceLimit == 0)
     {
-        pOutput->error("You have no open space.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You have no open space.");
         return;
     }
 
     int gilLimit    = m_AshitaCore->GetMemoryManager()->GetInventory()->GetContainerItem(0, 0)->Count / matchData.Price;
     if (gilLimit == 0)
     {
-        pOutput->error("You do not have enough gil.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You do not have enough gil.");
         return;
     }
 
@@ -58,15 +58,15 @@ void Bellhop::Buy(vector<string> Args, int ArgCount, CommandHelp HelpText)
     }
 
     if (boughtAmount == 1)
-        pOutput->message_f("Buying a $H%s$R for $H%ug$R.", matchData.Resource->LogNameSingular[0], matchData.Price);
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Buying a $H%s$R for $H%ug$R.", matchData.Resource->LogNameSingular[0], matchData.Price);
     else
-        pOutput->message_f("Buying $H%d %s$R for $H%ug$R.", boughtAmount, matchData.Resource->LogNamePlural[0], matchData.Price * boughtAmount);
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Buying $H%d %s$R for $H%ug$R.", boughtAmount, matchData.Resource->LogNamePlural[0], matchData.Price * boughtAmount);
 }
 void Bellhop::Buys(vector<string> Args, int ArgCount, CommandHelp HelpText)
 {
     if (!mState.ShopActive)
     {
-        pOutput->error("You do not currently have a shop active.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You do not currently have a shop active.");
         return;
     }
 
@@ -80,20 +80,20 @@ void Bellhop::Buys(vector<string> Args, int ArgCount, CommandHelp HelpText)
     uint8_t matchSlot    = GetShopItem(Args[2], &matchData);
     if (matchData.Resource == NULL)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
 
     if (GetAvailableSpace(0) == 0)
     {
-        pOutput->error("You have no open space.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You have no open space.");
         return;
     }
 
     int gilLimit   = m_AshitaCore->GetMemoryManager()->GetInventory()->GetContainerItem(0, 0)->Count / matchData.Price;
     if (gilLimit == 0)
     {
-        pOutput->error("You do not have enough gil.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You do not have enough gil.");
         return;
     }
 
@@ -110,15 +110,15 @@ void Bellhop::Buys(vector<string> Args, int ArgCount, CommandHelp HelpText)
     }
 
     if (boughtAmount == 1)
-        pOutput->message_f("Buying a $H%s$R for $H%ug$R.", matchData.Resource->LogNameSingular[0], matchData.Price);
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Buying a $H%s$R for $H%ug$R.", matchData.Resource->LogNameSingular[0], matchData.Price);
     else
-        pOutput->message_f("Buying $H%d %s$R for $H%ug$R.", boughtAmount, matchData.Resource->LogNamePlural[0], matchData.Price * boughtAmount);
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Buying $H%d %s$R for $H%ug$R.", boughtAmount, matchData.Resource->LogNamePlural[0], matchData.Price * boughtAmount);
 }
 void Bellhop::BuyAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
 {
     if (!mState.ShopActive)
     {
-        pOutput->error("You do not currently have a shop active.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You do not currently have a shop active.");
         return;
     }
 
@@ -132,21 +132,21 @@ void Bellhop::BuyAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
     uint8_t matchSlot = GetShopItem(Args[2], &matchData);
     if (matchData.Resource == NULL)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
 
     int spaceLimit = GetAvailableSpace(0) * matchData.Resource->StackSize;
     if (spaceLimit == 0)
     {
-        pOutput->error("You have no open space.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You have no open space.");
         return;
     }
 
     int gilLimit = m_AshitaCore->GetMemoryManager()->GetInventory()->GetContainerItem(0, 0)->Count / matchData.Price;
     if (gilLimit == 0)
     {
-        pOutput->error("You do not have enough gil.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You do not have enough gil.");
         return;
     }
 
@@ -163,7 +163,7 @@ void Bellhop::BuyAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
     }
 
     if (boughtAmount == 1)
-        pOutput->message_f("Buying a $H%s$R for $H%ug$R.", matchData.Resource->LogNameSingular[0], matchData.Price);
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Buying a $H%s$R for $H%ug$R.", matchData.Resource->LogNameSingular[0], matchData.Price);
     else
-        pOutput->message_f("Buying $H%d %s$R for $H%ug$R.", boughtAmount, matchData.Resource->LogNamePlural[0], matchData.Price * boughtAmount);
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Buying $H%d %s$R for $H%ug$R.", boughtAmount, matchData.Resource->LogNamePlural[0], matchData.Price * boughtAmount);
 }

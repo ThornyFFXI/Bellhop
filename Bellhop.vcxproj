@@ -168,12 +168,12 @@ cd build
   <ItemGroup>
     <ClCompile Include="AutoTrade.cpp" />
     <ClCompile Include="Bazaar.cpp" />
+    <ClCompile Include="BellhopConfig.cpp" />
     <ClCompile Include="Buy.cpp" />
     <ClCompile Include="Commands.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Drop.cpp" />
     <ClCompile Include="Help.cpp" />
-    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Get.cpp" />
     <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="main.cpp" />
@@ -186,8 +186,12 @@ cd build
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bellhop.h" />
+    <ClInclude Include="BellhopConfig.h" />
+    <ClInclude Include="ConfigLoader.h" />
+    <ClInclude Include="Output.h" />
     <ClInclude Include="Packets.h" />
     <ClInclude Include="Structs.h" />
+    <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def" />

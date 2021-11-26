@@ -11,13 +11,13 @@ void Bellhop::TradeToNpc(vector<string> Args, int ArgCount, CommandHelp HelpText
     uint16_t targetIndex = m_AshitaCore->GetMemoryManager()->GetTarget()->GetTargetIndex(m_AshitaCore->GetMemoryManager()->GetTarget()->GetIsSubTargetActive());
     if ((m_AshitaCore->GetMemoryManager()->GetEntity()->GetRawEntity(targetIndex) == NULL) || (targetIndex >= 0x400) || ((m_AshitaCore->GetMemoryManager()->GetEntity()->GetRenderFlags0(targetIndex) & 0x200) == 0))
     {
-        pOutput->error("You must have a valid NPC targeted.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You must have a valid NPC targeted.");
         return;
     }
 
     if (m_AshitaCore->GetMemoryManager()->GetEntity()->GetDistance(targetIndex) > 35.9f)
     {
-        pOutput->error("NPC is too far away.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "NPC is too far away.");
         return;
     }
 
@@ -94,12 +94,12 @@ void Bellhop::TradeToNpc(vector<string> Args, int ArgCount, CommandHelp HelpText
         {
             if (packet.TotalItems == 8)
             {
-                pOutput->error("Requested trade could not be fit in 8 trade slots.");
+                OutputHelper::Output(Ashita::LogLevel::Error, "Requested trade could not be fit in 8 trade slots.");
                 return;
             }
             else
             {
-                pOutput->error_f("Only found $H%d/%d$R items matching the term $H%s$R.", itemsFound, quantity, Args[x].c_str());
+                OutputHelper::Outputf(Ashita::LogLevel::Error, "Only found $H%d/%d$R items matching the term $H%s$R.", itemsFound, quantity, Args[x].c_str());
                 return;
             }
         }
@@ -107,7 +107,7 @@ void Bellhop::TradeToNpc(vector<string> Args, int ArgCount, CommandHelp HelpText
 
     packet.ArrangeGil();
     m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x36, sizeof(pk_TradeToNpc), (uint8_t*)&packet);
-    pOutput->message_f("Traded $H%d$R matching items to $H%s$R.", totalCount, m_AshitaCore->GetMemoryManager()->GetEntity()->GetName(packet.TargetIndex));
+    OutputHelper::Outputf(Ashita::LogLevel::Info, "Traded $H%d$R matching items to $H%s$R.", totalCount, m_AshitaCore->GetMemoryManager()->GetEntity()->GetName(packet.TargetIndex));
 }
 void Bellhop::TradeAllToNpc(vector<string> Args, int ArgCount, CommandHelp HelpText)
 {
@@ -120,13 +120,13 @@ void Bellhop::TradeAllToNpc(vector<string> Args, int ArgCount, CommandHelp HelpT
     uint16_t targetIndex     = m_AshitaCore->GetMemoryManager()->GetTarget()->GetTargetIndex(m_AshitaCore->GetMemoryManager()->GetTarget()->GetIsSubTargetActive());
     if ((m_AshitaCore->GetMemoryManager()->GetEntity()->GetRawEntity(targetIndex) == NULL) || (targetIndex >= 0x400) || ((m_AshitaCore->GetMemoryManager()->GetEntity()->GetRenderFlags0(targetIndex) & 0x200) == 0))
     {
-        pOutput->error("You must have a valid NPC targeted.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "You must have a valid NPC targeted.");
         return;
     }
 
     if (m_AshitaCore->GetMemoryManager()->GetEntity()->GetDistance(targetIndex) > 35.9f)
     {
-        pOutput->error("NPC is too far away.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "NPC is too far away.");
         return;    
     }
 
@@ -137,7 +137,7 @@ void Bellhop::TradeAllToNpc(vector<string> Args, int ArgCount, CommandHelp HelpT
     }
     if (items.size() == 0)
     {
-        pOutput->error("No matching items found.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "No matching items found.");
         return;
     }
 
@@ -170,11 +170,11 @@ void Bellhop::TradeAllToNpc(vector<string> Args, int ArgCount, CommandHelp HelpT
 
     if (tradeCount == 0)
     {
-        pOutput->error("No matching items could be traded.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "No matching items could be traded.");
         return;
     }
 
     packet.ArrangeGil();
     m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x36, sizeof(pk_TradeToNpc), (uint8_t*)&packet);
-    pOutput->message_f("Traded $H%d$R matching items to $H%s$R.", tradeCount, m_AshitaCore->GetMemoryManager()->GetEntity()->GetName(packet.TargetIndex));
+    OutputHelper::Outputf(Ashita::LogLevel::Info, "Traded $H%d$R matching items to $H%s$R.", tradeCount, m_AshitaCore->GetMemoryManager()->GetEntity()->GetName(packet.TargetIndex));
 }

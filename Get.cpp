@@ -14,7 +14,7 @@ void Bellhop::Get(vector<string> Args, int ArgCount, CommandHelp HelpText)
         Quantity = atoi(Args[3].c_str());
         if ((Quantity < 1) || (Quantity > 7920))
         {
-            pOutput->error_f("Quantity must be between 1 and 7920.  You entered: %s", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Quantity must be between 1 and 7920.  You entered: %s", Args[3].c_str());
             return;
         }
     }
@@ -25,7 +25,7 @@ void Bellhop::Get(vector<string> Args, int ArgCount, CommandHelp HelpText)
         Container = GetContainerIndexFromName(Args[4].c_str());
         if (Container == -1)
         {
-            pOutput->error_f("Invalid container specified.  You input: %s", Args[4].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Invalid container specified.  You input: %s", Args[4].c_str());
             return;
         }
     }
@@ -33,7 +33,7 @@ void Bellhop::Get(vector<string> Args, int ArgCount, CommandHelp HelpText)
     int invSpaceAvailable = GetAvailableSpace(0);
     if (invSpaceAvailable == 0)
     {
-        pOutput->error("No available inventory space.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "No available inventory space.");
         return;
     }
 
@@ -102,21 +102,21 @@ void Bellhop::Get(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     if (resultCount == 0)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
-    else if ((results.size() > 1) && (mSettings.ShortOutput))
+    else if ((results.size() > 1) && (mConfig.GetShortOutput()))
     {
-        pOutput->message_f("Retrieving $H%u$R matching items.", resultCount);
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Retrieving $H%u$R matching items.", resultCount);
     }
     else
     {
         for (std::list<ItemActionInfo>::iterator iter = results.begin(); iter != results.end(); iter++)
         {
             if (iter->Count == 1)
-                pOutput->message_f("Retrieving a $H%s$R from $H%s$R.", iter->Resource->LogNameSingular[0], ContainerNames[iter->Location]);
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Retrieving a $H%s$R from $H%s$R.", iter->Resource->LogNameSingular[0], ContainerNames[iter->Location]);
             else
-                pOutput->message_f("Retrieving $H%u %s$R from $H%s$R.", iter->Count, iter->Resource->LogNamePlural[0], ContainerNames[iter->Location]);
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Retrieving $H%u %s$R from $H%s$R.", iter->Count, iter->Resource->LogNamePlural[0], ContainerNames[iter->Location]);
         }
     }
 }
@@ -134,7 +134,7 @@ void Bellhop::Gets(vector<string> Args, int ArgCount, CommandHelp HelpText)
         Container = GetContainerIndexFromName(Args[3].c_str());
         if (Container == -1)
         {
-            pOutput->error_f("Invalid container specified.  You input: %s", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Invalid container specified.  You input: %s", Args[3].c_str());
             return;
         }
     }
@@ -142,7 +142,7 @@ void Bellhop::Gets(vector<string> Args, int ArgCount, CommandHelp HelpText)
     int invSpaceAvailable = GetAvailableSpace(0);
     if (invSpaceAvailable == 0)
     {
-        pOutput->error("No available inventory space.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "No available inventory space.");
         return;
     }
 
@@ -179,13 +179,13 @@ void Bellhop::Gets(vector<string> Args, int ArgCount, CommandHelp HelpText)
         m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x029, sizeof(pk_MoveItem), (uint8_t*)&packet);
 
         if (packet.Quantity == 1)
-            pOutput->message_f("Retrieving a $H%s$R from $H%s$R.", iter->Resource->LogNameSingular[0], ContainerNames[iter->Container]);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Retrieving a $H%s$R from $H%s$R.", iter->Resource->LogNameSingular[0], ContainerNames[iter->Container]);
         else
-            pOutput->message_f("Retrieving $H%u %s$R from $H%s$R.", packet.Quantity, iter->Resource->LogNamePlural[0], ContainerNames[iter->Container]);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Retrieving $H%u %s$R from $H%s$R.", packet.Quantity, iter->Resource->LogNamePlural[0], ContainerNames[iter->Container]);
         return;
     }
 
-    pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+    OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
 }
 void Bellhop::GetAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
 {
@@ -201,7 +201,7 @@ void Bellhop::GetAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
         Container = GetContainerIndexFromName(Args[3].c_str());
         if (Container == -1)
         {
-            pOutput->error_f("Invalid container specified.  You input: %s", Args[3].c_str());
+            OutputHelper::Outputf(Ashita::LogLevel::Error, "Invalid container specified.  You input: %s", Args[3].c_str());
             return;
         }
     }
@@ -209,7 +209,7 @@ void Bellhop::GetAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
     int invSpaceAvailable = GetAvailableSpace(0);
     if (invSpaceAvailable == 0)
     {
-        pOutput->error("No available inventory space.");
+        OutputHelper::Output(Ashita::LogLevel::Error, "No available inventory space.");
         return;
     }
 
@@ -256,21 +256,21 @@ void Bellhop::GetAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     if (resultCount == 0)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
-    else if ((results.size() > 1) && (mSettings.ShortOutput))
+    else if ((results.size() > 1) && (mConfig.GetShortOutput()))
     {
-        pOutput->message_f("Retrieving $H%u$R matching items.", resultCount);
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Retrieving $H%u$R matching items.", resultCount);
     }
     else
     {
         for (std::list<ItemActionInfo>::iterator iter = results.begin(); iter != results.end(); iter++)
         {
             if (iter->Count == 1)
-                pOutput->message_f("Retrieving a $H%s$R from $H%s$R.", iter->Resource->LogNameSingular[0], ContainerNames[iter->Location]);
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Retrieving a $H%s$R from $H%s$R.", iter->Resource->LogNameSingular[0], ContainerNames[iter->Location]);
             else
-                pOutput->message_f("Retrieving $H%u %s$R from $H%s$R.", iter->Count, iter->Resource->LogNamePlural[0], ContainerNames[iter->Location]);
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Retrieving $H%u %s$R from $H%s$R.", iter->Count, iter->Resource->LogNamePlural[0], ContainerNames[iter->Location]);
         }
     }
 }

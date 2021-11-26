@@ -11,7 +11,7 @@ void Bellhop::Drop(vector<string> Args, int ArgCount, CommandHelp HelpText)
     std::list<ItemData_t> Items = GetMatchingItems(Args[2], 0);
     if (Items.size() == 0)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
 
@@ -42,13 +42,13 @@ void Bellhop::Drop(vector<string> Args, int ArgCount, CommandHelp HelpText)
         m_AshitaCore->GetPacketManager()->AddOutgoingPacket(0x28, sizeof(pk_DropItem), (uint8_t*)&packet);
 
         if (iter->Item->Count == 1)
-            pOutput->message_f("Dropping a $H%s$R.", iter->Resource->LogNameSingular[0]);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Dropping a $H%s$R.", iter->Resource->LogNameSingular[0]);
         else
-            pOutput->message_f("Dropping $H%d %s$R.", iter->Item->Count, iter->Resource->LogNamePlural[0]);
+            OutputHelper::Outputf(Ashita::LogLevel::Info, "Dropping $H%d %s$R.", iter->Item->Count, iter->Resource->LogNamePlural[0]);
         return;
     }
 
-    pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+    OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
     return;
 }
 void Bellhop::DropAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
@@ -62,7 +62,7 @@ void Bellhop::DropAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
     std::list<ItemData_t> Items = GetMatchingItems(Args[2], 0);
     if (Items.size() == 0)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
 
@@ -90,22 +90,22 @@ void Bellhop::DropAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
 
     if (resultCount == 0)
     {
-        pOutput->error_f("No matching items found.  Term: %s", Args[2].c_str());
+        OutputHelper::Outputf(Ashita::LogLevel::Error, "No matching items found.  Term: %s", Args[2].c_str());
         return;
     }
 
-    if ((results.size() > 1) && (mSettings.ShortOutput))
+    if ((results.size() > 1) && (mConfig.GetShortOutput()))
     {
-        pOutput->message_f("Dropping $H%u$R matching items.", resultCount);
+        OutputHelper::Outputf(Ashita::LogLevel::Info, "Dropping $H%u$R matching items.", resultCount);
     }
     else
     {
         for (std::list<ItemActionInfo>::iterator iter = results.begin(); iter != results.end(); iter++)
         {
             if (iter->Count == 1)
-                pOutput->message_f("Dropping a $H%s$R.", iter->Resource->LogNameSingular[0]);
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Dropping a $H%s$R.", iter->Resource->LogNameSingular[0]);
             else
-                pOutput->message_f("Dropping $H%u %s$R.", iter->Count, iter->Resource->LogNamePlural[0]);
+                OutputHelper::Outputf(Ashita::LogLevel::Info, "Dropping $H%u %s$R.", iter->Count, iter->Resource->LogNamePlural[0]);
         }
     }
 }
