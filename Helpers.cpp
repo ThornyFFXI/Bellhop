@@ -227,8 +227,9 @@ void Bellhop::CheckContainers(uint8_t* buffer)
         }
     }
 
-    DWORD Memloc = Read32(pWardrobe, 1);
+    DWORD Memloc = Read32(pWardrobe, 0);
     Memloc       = Read32(Memloc, 0);
+    uint8_t flags = Read8(Memloc, 0xB4);
 
     buffer[0]  = true;                                               //Always have inventory.
     buffer[1]  = (atNomad || inMog);                                 //Safe
@@ -241,8 +242,12 @@ void Bellhop::CheckContainers(uint8_t* buffer)
     buffer[8]  = true;                                               //Wardrobe
     buffer[9]  = (atNomad || inMog);                                 //Safe2
     buffer[10] = true;                                               //Wardrobe2
-    buffer[11] = ((Read8(Memloc, 0xB4) & 0x04) != 0);                //Wardrobe3
-    buffer[12] = ((Read8(Memloc, 0xB4) & 0x08) != 0);                //Wardrobe4
+    buffer[11] = ((flags & 0x04) != 0);                //Wardrobe3
+    buffer[12] = ((flags & 0x08) != 0);                //Wardrobe4
+    buffer[13] = ((flags & 0x10) != 0);                //Wardrobe5
+    buffer[14] = ((flags & 0x20) != 0);                //Wardrobe6
+    buffer[15] = ((flags & 0x40) != 0);                //Wardrobe7
+    buffer[16] = ((flags & 0x80) != 0);                //Wardrobe8
 
     auto enabledbags = mConfig.GetEnabledBags();
     for (auto iter = enabledbags.begin(); iter != enabledbags.end(); iter++)

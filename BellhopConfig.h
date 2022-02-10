@@ -1,5 +1,5 @@
-#ifndef __ASHITA_FindAllConfig_H_INCLUDED__
-#define __ASHITA_FindAllConfig_H_INCLUDED__
+#ifndef __ASHITA_BellhopConfig_H_INCLUDED__
+#define __ASHITA_BellhopConfig_H_INCLUDED__
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 #pragma once

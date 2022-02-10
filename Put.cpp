@@ -98,7 +98,7 @@ void Bellhop::Put(vector<string> Args, int ArgCount, CommandHelp HelpText)
             continue;
 
         pk_MoveItem packet;
-        for (int x = 0; x < 13; x++)
+        for (int x = 0; x < 17; x++)
         {
             if ((space[x] > 0) && (CanStoreItem(x, *iter)))
             {
@@ -208,7 +208,7 @@ void Bellhop::Puts(vector<string> Args, int ArgCount, CommandHelp HelpText)
             continue;
 
         pk_MoveItem packet;
-        for (int x = 0; x < 13; x++)
+        for (int x = 0; x < CONTAINER_MAX; x++)
         {
             if ((space[x] > 0) && (CanStoreItem(x, *iter)))
             {
@@ -300,7 +300,7 @@ void Bellhop::PutAll(vector<string> Args, int ArgCount, CommandHelp HelpText)
             continue;
 
         pk_MoveItem packet;
-        for (int x = 0; x < 13; x++)
+        for (int x = 0; x < CONTAINER_MAX; x++)
         {
             if ((space[x] > 0) && (CanStoreItem(x, *iter)))
             {

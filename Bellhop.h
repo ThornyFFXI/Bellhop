@@ -11,7 +11,7 @@
 #include "Packets.h"
 #include "Structs.h"
 
-#define CONTAINER_MAX 13
+#define CONTAINER_MAX 17
 extern const char* ContainerNames[CONTAINER_MAX];
 
 class Bellhop : IPlugin
@@ -53,7 +53,7 @@ public:
     }
     double GetVersion(void) const override
     {
-        return 1.17f;
+        return 1.18f;
     }
     int32_t GetPriority(void) const override
     {
