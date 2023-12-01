@@ -144,7 +144,7 @@ void Bellhop::HandleIncomingPacket_03C(uint32_t size, const uint8_t* data)
         entry.Price   = Read32(data, x);
         entry.Resource = m_AshitaCore->GetResourceManager()->GetItemById(Read16(data, x + 4));
 
-        if (mConfig.GetIgnoreCraftSkill())
+        if (!mConfig.GetIgnoreCraftSkill())
         {
             uint16_t craftSkill = Read16(data, x + 8);
             if (craftSkill != 0)
