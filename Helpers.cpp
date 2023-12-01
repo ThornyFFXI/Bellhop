@@ -1,5 +1,8 @@
 #include "Bellhop.h"
 
+std::list<int> gEquipBags =
+{8, 10, 11, 12, 13, 14, 15, 16};
+
 std::list<ItemData_t> Bellhop::GetMatchingItemsNoInventory(std::string Parameter)
 {
     uint8_t Containers[CONTAINER_MAX] = {0};
@@ -335,11 +338,8 @@ bool Bellhop::CanStoreItem(int Container, ItemData_t item)
         return false;
     }
 
-    //only equippables in wardrobe
-    if (((Container == 8) || (Container == 10) || (Container == 11) || (Container == 12)) && (!(item.Resource->Flags & 0x0800)))
-    {
+    if ((std::find(gEquipBags.begin(), gEquipBags.end(), Container) != gEquipBags.end()) && (!(item.Resource->Flags & 0x800)))
         return false;
-    }
 
     return true;
 }
