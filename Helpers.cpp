@@ -257,8 +257,9 @@ void Bellhop::CheckContainers(uint8_t* buffer)
     {
         buffer[*iter] = true;
     }
-
-    for (auto iter = enabledbags.begin(); iter != enabledbags.end(); iter++)
+    
+    auto disabledbags = mConfig.GetDisabledBags();
+    for (auto iter = disabledbags.begin(); iter != disabledbags.end(); iter++)
     {
         buffer[*iter] = false;
     }
