@@ -5,10 +5,11 @@ Bellhop is a plugin to make managing your inventory easier.  It operates entirel
 Bellhop has very powerful commands.  This can make things much quicker.  However, it can also cause unintended results.  Please use extreme caution when using commands such as drop, sell, etc.. particularly with wildcards.  If you type something along the lines of '/bh dropall \*', bellhop will honor the request and drop everything in your inventory.  Caution should be employed when using bellhop immediately after a maintenance, to ensure inventory structure shifts have not occurred.  I am not responsible for any mistakes or bugs resulting in the loss of items, though I have put every effort forward to ensure the plugin behaves exactly as described.
 
 # Installation
+Do not download the entire repository as a zip unless you plan to compile the plugin yourself. That will not provide the files you need.<br>
+
 1. Download the plugin release zip that matches your ashita installation's interface version from the releases area on the right side.
 2. Extract the entire zip to your ashita folder(the folder containing ashita.dll and ashita-cli.exe). Everything will fall into place.
 3. Load with '/load bellhop' or add the same line to your startup script. Bellhop is a plugin not an addon, so do not use '/addon load'.
-Do not download the entire repository as a zip unless you plan to compile the plugin yourself. That will not provide the files you need.
 
 ### Item Parameters
 Anywhere where a command uses the term 'item', you may input items several different ways.  You can use:<br>
