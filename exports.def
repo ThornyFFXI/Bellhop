@@ -1,4 +1,5 @@
 LIBRARY "Bellhop"
 EXPORTS
 	expCreatePlugin
+	expDestroyPlugin
 	expGetInterfaceVersion
